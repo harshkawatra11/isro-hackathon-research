@@ -1,6 +1,6 @@
 {
-  "buildCommand": "cd heliograph && npm run build",
+  "buildCommand": "npm --prefix heliograph run build",
   "outputDirectory": "heliograph/dist",
-  "devCommand": "cd heliograph && npm run dev",
-  "installCommand": "npm install && cd heliograph && npm install"
+  "devCommand": "npm --prefix heliograph run dev",
+  "installCommand": "npm --prefix heliograph install"
 }
