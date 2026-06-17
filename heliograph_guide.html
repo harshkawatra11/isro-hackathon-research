@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HELIOGRAPH — Build Guide for ISRO BAH-2026 PS-15 (Solar Flare Nowcasting & Forecasting)</title>
+<style>
+:root{
+  --bg:#080b14; --bg2:#0d1322; --panel:#121a2e; --panel2:#16203a;
+  --line:#243150; --accent:#ff6b1a; --accent2:#ffa726; --blue:#4aa8ff;
+  --green:#34d399; --purple:#a78bfa; --red:#f0506e; --amber:#fbbf24;
+  --text:#e8edf7; --muted:#8a96ad; --dim:#5a6680;
+  --sci:#4aa8ff; --eng:#ff8a3d; --isro:#34d399;
+  --mono:'SF Mono',ui-monospace,'Cascadia Code',Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:
+  radial-gradient(1200px 600px at 80% -10%, rgba(255,107,26,.10), transparent 60%),
+  radial-gradient(900px 500px at 0% 20%, rgba(74,168,255,.08), transparent 55%),
+  var(--bg);
+  color:var(--text);font-family:var(--sans);line-height:1.62;font-size:16px}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3,h4{line-height:1.25;font-weight:700}
+code{font-family:var(--mono);background:#0a1020;border:1px solid var(--line);
+  padding:.08em .4em;border-radius:5px;font-size:.86em;color:var(--accent2)}
+pre{background:#0a1020;border:1px solid var(--line);border-radius:10px;padding:16px;
+  overflow:auto;font-family:var(--mono);font-size:13px;line-height:1.55}
+pre code{background:none;border:none;padding:0;color:#cfe0ff}
+
+/* ---------- Layout ---------- */
+#wrap{display:grid;grid-template-columns:286px 1fr;max-width:1500px;margin:0 auto}
+#nav{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;
+  border-right:1px solid var(--line);padding:22px 16px 60px;background:rgba(8,11,20,.7);
+  backdrop-filter:blur(8px)}
+#nav .brand{font-weight:800;font-size:19px;letter-spacing:.5px;margin:0 0 2px}
+#nav .brand b{color:var(--accent)}
+#nav .tag{font-size:11px;color:var(--muted);margin-bottom:18px}
+#nav a{display:block;color:var(--muted);padding:5px 10px;border-radius:7px;font-size:13.5px;
+  border-left:2px solid transparent;margin:1px 0}
+#nav a:hover{color:var(--text);background:var(--panel);text-decoration:none}
+#nav a.active{color:var(--text);background:var(--panel2);border-left-color:var(--accent)}
+#nav .grp{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);
+  margin:16px 0 4px 10px;font-weight:700}
+main{padding:0 clamp(20px,4vw,64px) 120px;max-width:980px}
+section{padding:54px 0 10px;border-bottom:1px solid rgba(36,49,80,.5)}
+section:last-child{border-bottom:none}
+
+/* progress bar */
+#prog{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));
+  width:0;z-index:50;transition:width .1s}
+
+/* hero */
+#hero{padding:70px 0 40px;border-bottom:1px solid var(--line)}
+#hero .kicker{color:var(--accent);font-weight:700;letter-spacing:3px;font-size:12px;text-transform:uppercase}
+#hero h1{font-size:clamp(34px,6vw,58px);margin:.18em 0 .1em;
+  background:linear-gradient(120deg,#fff 30%,var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+#hero .sub{font-size:19px;color:var(--muted);max-width:760px}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.badge{font-size:12.5px;padding:6px 12px;border:1px solid var(--line);border-radius:30px;
+  background:var(--panel);color:var(--muted)}
+.badge b{color:var(--text)}
+
+/* track tags */
+.track{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;
+  padding:3px 9px;border-radius:20px;vertical-align:middle;margin-left:10px}
+.t-sci{background:rgba(74,168,255,.13);color:var(--sci);border:1px solid rgba(74,168,255,.35)}
+.t-eng{background:rgba(255,138,61,.13);color:var(--eng);border:1px solid rgba(255,138,61,.35)}
+.t-isro{background:rgba(52,211,153,.13);color:var(--isro);border:1px solid rgba(52,211,153,.35)}
+h2{font-size:30px;margin:0 0 6px;display:flex;align-items:center;flex-wrap:wrap;gap:4px}
+h2 .num{color:var(--accent);font-family:var(--mono);font-size:20px;margin-right:12px}
+h3{font-size:20px;margin:30px 0 8px;color:#fff}
+h4{font-size:16px;margin:20px 0 6px;color:var(--accent2)}
+
+/* callouts */
+.call{border:1px solid var(--line);border-left:4px solid var(--blue);background:var(--panel);
+  border-radius:10px;padding:14px 18px;margin:18px 0}
+.call.k{border-left-color:var(--accent)} .call.warn{border-left-color:var(--amber)}
+.call.good{border-left-color:var(--green)} .call.deep{border-left-color:var(--purple)}
+.call .lab{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--muted);margin-bottom:4px}
+.call.k .lab{color:var(--accent)} .call.warn .lab{color:var(--amber)}
+.call.good .lab{color:var(--green)} .call.deep .lab{color:var(--purple)}
+
+/* tables */
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:var(--panel2);color:#fff;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px}
+tr:nth-child(even) td{background:rgba(18,26,46,.5)}
+
+/* cards grid */
+.grid{display:grid;gap:16px;margin:20px 0}
+.g2{grid-template-columns:1fr 1fr} .g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:780px){.g2,.g3{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+.card h4{margin-top:0}
+.card .ic{font-size:26px;margin-bottom:6px}
+
+/* figure / interactive */
+figure{margin:24px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px;overflow:hidden}
+figcaption{color:var(--muted);font-size:13px;margin-top:10px;text-align:center}
+.ctrls{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:12px;font-size:13px;color:var(--muted)}
+.ctrls input[type=range]{accent-color:var(--accent);width:200px}
+button.btn{background:var(--accent);color:#10131c;border:none;border-radius:8px;padding:8px 16px;
+  font-weight:700;cursor:pointer;font-size:13px}
+button.btn:hover{background:var(--accent2)}
+button.btn.alt{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;margin-top:8px;justify-content:center}
+.legend span{display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
+.swatch{width:13px;height:13px;border-radius:3px;display:inline-block}
+
+/* editable cover fields */
+.field{display:flex;gap:10px;align-items:center;margin:8px 0}
+.field label{width:150px;color:var(--muted);font-size:14px}
+.field input{flex:1;background:#0a1020;border:1px solid var(--line);border-radius:8px;
+  padding:9px 12px;color:var(--text);font-family:var(--sans);font-size:15px}
+.field input:focus{outline:none;border-color:var(--accent)}
+
+.stat{display:inline-flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:12px 18px;margin:6px 8px 6px 0;min-width:120px}
+.stat b{font-size:26px;color:var(--accent2);font-family:var(--mono)}
+.stat span{font-size:12px;color:var(--muted)}
+
+ul.clean{list-style:none;padding-left:0}
+ul.clean li{padding:6px 0 6px 28px;position:relative}
+ul.clean li:before{content:"▸";position:absolute;left:6px;color:var(--accent)}
+.kbd{font-family:var(--mono);font-size:12px;background:#0a1020;border:1px solid var(--line);
+  border-bottom-width:2px;border-radius:5px;padding:1px 6px}
+
+.alertbar{display:flex;align-items:center;gap:12px;border-radius:10px;padding:12px 16px;font-weight:600;margin:6px 0}
+.alertbar.green{background:rgba(52,211,153,.12);border:1px solid var(--green);color:var(--green)}
+.alertbar.amber{background:rgba(251,191,36,.12);border:1px solid var(--amber);color:var(--amber)}
+.alertbar.red{background:rgba(240,80,110,.14);border:1px solid var(--red);color:var(--red)}
+.dot{width:11px;height:11px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor}
+
+.phase{border:1px solid var(--line);border-radius:12px;margin:14px 0;overflow:hidden;background:var(--panel)}
+.phase>.head{display:flex;gap:12px;align-items:center;padding:14px 18px;cursor:pointer;background:var(--panel2)}
+.phase>.head .n{font-family:var(--mono);color:var(--accent);font-weight:700;font-size:15px}
+.phase>.head .t{font-weight:700;font-size:16px}
+.phase>.head .meta{margin-left:auto;font-size:12px;color:var(--muted)}
+.phase>.body{padding:4px 18px 16px;display:none}
+.phase.open>.body{display:block}
+.phase .chev{transition:transform .2s;color:var(--muted)}
+.phase.open .chev{transform:rotate(90deg)}
+
+.footer{color:var(--dim);font-size:13px;padding:40px 0 0}
+.src{font-size:13px;color:var(--muted)}
+.src li{margin:4px 0}
+
+@media print{
+  #nav,#prog,.ctrls,.no-print{display:none!important}
+  #wrap{grid-template-columns:1fr}
+  body{background:#fff;color:#000;font-size:12px}
+  section{page-break-inside:avoid;border:none;padding:18px 0}
+  .card,.call,figure,table,.phase{border-color:#bbb}
+  h2 .num{color:#c0560f}
+  .track{border:1px solid #999;color:#333}
+}
+@media(max-width:880px){
+  #wrap{grid-template-columns:1fr}
+  #nav{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line)}
+}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<div id="wrap">
+
+<!-- ================= NAV ================= -->
+<aside id="nav">
+  <div class="brand"><b>HELIO</b>GRAPH</div>
+  <div class="tag">Build guide · ISRO BAH-2026 · PS-15</div>
+  <div class="grp">Submission</div>
+  <a href="#cover">Cover &amp; Team</a>
+  <div class="grp">The Science <span style="color:var(--sci)">●</span></div>
+  <a href="#stakes">B · Why it matters</a>
+  <a href="#sun">C · Sun &amp; flares 101</a>
+  <a href="#xrays">D · X-rays: soft vs hard</a>
+  <a href="#mission">E · Aditya-L1 &amp; payloads</a>
+  <a href="#neupert">E2 · Light curve &amp; Neupert</a>
+  <div class="grp">The Build <span style="color:var(--eng)">●</span></div>
+  <a href="#data">F · The data</a>
+  <a href="#methodology">L · Methodology &amp; rigour</a>
+  <a href="#tech">F2 · Technologies</a>
+  <a href="#roadmap">O · Roadmap (Claude Code)</a>
+  <div class="grp">ISRO Template <span style="color:var(--isro)">●</span></div>
+  <a href="#opportunity">G · Opportunity &amp; USP</a>
+  <a href="#features">H · Features</a>
+  <a href="#flow">I · Process flow</a>
+  <a href="#arch">J · Architecture</a>
+  <a href="#wireframe">K · Wireframes</a>
+  <a href="#cost">M · Cost</a>
+  <a href="#close">Close &amp; references</a>
+</aside>
+
+<main>
+
+<!-- ================= HERO ================= -->
+<div id="hero">
+  <div class="kicker">Bharatiya Antariksh Hackathon 2026 · Problem Statement 15</div>
+  <h1>HELIOGRAPH</h1>
+  <p class="sub">An end-to-end build &amp; education guide for <b>nowcasting and forecasting solar flares</b>
+  from Aditya-L1's combined soft + hard X-ray data — written for an AI/ML engineer with zero astrophysics
+  background, and a senior-developer roadmap for building it with Claude Code.</p>
+  <div class="badges">
+    <span class="badge">🛰️ <b>SoLEXS</b> 2–22 keV soft X-ray</span>
+    <span class="badge">⚡ <b>HEL1OS</b> 8–150 keV hard X-ray</span>
+    <span class="badge">🧠 <b>LightGBM + MiniROCKET</b> hybrid</span>
+    <span class="badge">📊 <b>TSS</b>-driven evaluation</span>
+    <span class="badge">💸 <b>₹0</b> · runs on RTX 3050 / 16 GB</span>
+  </div>
+  <div class="call k" style="margin-top:26px">
+    <div class="lab">How to read this document</div>
+    Sections are tagged <span class="track t-sci">Science</span> (learn the domain),
+    <span class="track t-eng">Engineering</span> (build it right), and
+    <span class="track t-isro">ISRO Submission</span> (maps directly to <code>template.pdf</code>).
+    Read top-to-bottom the first time — the science builds the intuition the engineering depends on.
+    Use <span class="kbd">Ctrl/Cmd&nbsp;+&nbsp;P</span> to export the ISRO-tagged sections to the submission deck.
+  </div>
+</div>
+
+<!-- ================= COVER ================= -->
+<section id="cover">
+  <h2><span class="num">A</span> Cover &amp; Team <span class="track t-isro">ISRO Submission · template p1–2</span></h2>
+  <p>These fields populate the BAH-2026 cover and team slides. Edit them in-browser; they print into the deck.</p>
+  <div class="card">
+    <div class="field"><label>Team Name</label><input value="HELIOGRAPH" placeholder="Your team name"></div>
+    <div class="field"><label>Problem Statement</label><input value="PS-15 · Forecasting / Nowcasting of Solar Flares using combined Soft &amp; Hard X-ray data from Aditya-L1"></div>
+    <div class="field"><label>Team Leader</label><input value="Harsh Kawatra" placeholder="Name"></div>
+    <div class="field"><label>Leader College</label><input value="Delhi Technological University (DTU)"></div>
+  </div>
+  <div class="grid g3" style="margin-top:14px">
+    <div class="card"><h4>Member 1</h4>
+      <div class="field"><label style="width:70px">Name</label><input placeholder="Name"></div>
+      <div class="field"><label style="width:70px">College</label><input placeholder="College"></div></div>
+    <div class="card"><h4>Member 2</h4>
+      <div class="field"><label style="width:70px">Name</label><input placeholder="Name"></div>
+      <div class="field"><label style="width:70px">College</label><input placeholder="College"></div></div>
+    <div class="card"><h4>Member 3</h4>
+      <div class="field"><label style="width:70px">Name</label><input placeholder="Name"></div>
+      <div class="field"><label style="width:70px">College</label><input placeholder="College"></div></div>
+  </div>
+</section>
+
+<!-- ================= B · STAKES ================= -->
+<section id="stakes">
+  <h2><span class="num">B</span> Why this matters <span class="track t-sci">Science</span></h2>
+  <p>A <b>solar flare</b> is a sudden release of magnetic energy on the Sun that floods space with radiation
+  across the electromagnetic spectrum. When that radiation and the particles/plasma that follow it reach Earth,
+  they cause <b>space weather</b> — and space weather breaks the infrastructure modern life runs on.</p>
+  <div class="grid g2">
+    <div class="card"><div class="ic">📡</div><h4>Satellite communications</h4>
+      X-ray and EUV bursts ionise the upper atmosphere within ~8 minutes, causing radio blackouts and
+      degrading or knocking out satellite links — including the very satellites ISRO operates.</div>
+    <div class="card"><div class="ic">🛰️</div><h4>GPS / NavIC navigation</h4>
+      Sudden ionospheric changes corrupt the timing signals positioning depends on, throwing off
+      navigation for aviation, shipping, defence and everyday devices.</div>
+    <div class="card"><div class="ic">⚡</div><h4>Power grids</h4>
+      The geomagnetic storms that can follow large flares induce currents in long transmission lines,
+      tripping protection and, in extremes, damaging transformers.</div>
+    <div class="card"><div class="ic">👩‍🚀</div><h4>Astronaut &amp; spacecraft safety</h4>
+      Hard-X-ray and energetic-particle events are a radiation hazard to crewed missions (think Gaganyaan)
+      and can flip bits or damage electronics on spacecraft.</div>
+  </div>
+  <div class="call k"><div class="lab">The ask, in one line</div>
+  If we can <b>detect a flare the moment it starts</b> (nowcast) and — better — <b>warn minutes before its
+  most damaging peak</b> (forecast), operators get time to safe-mode hardware. That warning time is literally
+  the thing ISRO scores. Everything in this guide optimises for it.</div>
+</section>
+
+<!-- ================= C · SUN 101 ================= -->
+<section id="sun">
+  <h2><span class="num">C</span> The Sun &amp; solar flares, from scratch <span class="track t-sci">Science</span></h2>
+  <p>You don't need a physics degree — just four ideas.</p>
+  <h3>1 · The Sun is a magnetic machine</h3>
+  <p>The Sun is a ball of plasma (charged gas). Moving charges make magnetic fields, and the Sun's rotation
+  twists those fields into stressed, tangled loops above active regions (sunspots). Stressed magnetic fields
+  store energy like a wound spring.</p>
+  <h3>2 · Magnetic reconnection releases the energy</h3>
+  <p>When tangled field lines snap and reconnect into a lower-energy configuration, the stored energy is
+  released explosively — accelerating electrons to enormous speeds and heating local plasma to tens of
+  millions of kelvin. <b>That event is a flare.</b></p>
+  <h3>3 · A flare has two phases</h3>
+  <div class="grid g2">
+    <div class="card"><h4>⚡ Impulsive phase (seconds–minutes)</h4>
+      Newly-accelerated <b>non-thermal electrons</b> slam into the dense lower atmosphere and emit
+      <b>hard X-rays</b> (high energy). Short, spiky, early.</div>
+    <div class="card"><h4>🔥 Gradual phase (minutes–hours)</h4>
+      The plasma those electrons heated glows in <b>soft X-rays</b> (lower energy) — a smooth rise to a
+      peak, then a slow decay. This is the bulk thermal radiation.</div>
+  </div>
+  <h3>4 · Flares come in sizes — the A/B/C/M/X scale</h3>
+  <p>Flares are classified by their <b>peak soft-X-ray brightness</b> (the GOES 1–8 Å flux). It's a
+  logarithmic ladder — each letter is 10× the previous.</p>
+  <figure>
+    <div id="flareLadder"></div>
+    <figcaption>The flare-class ladder. Each step up is ×10 in energy. "Detection of low- and high-class
+    flares" — an ISRO evaluation criterion — means working across this entire 10,000× dynamic range.</figcaption>
+  </figure>
+</section>
+
+<!-- ================= D · X-RAYS ================= -->
+<section id="xrays">
+  <h2><span class="num">D</span> X-rays: soft vs hard <span class="track t-sci">Science</span></h2>
+  <p>X-rays are light — just very high-energy light, far beyond visible. We measure their energy in
+  <b>kilo-electron-volts (keV)</b>. Higher keV = "harder" = more penetrating.</p>
+  <figure>
+    <div id="emSpectrum"></div>
+    <figcaption>The electromagnetic spectrum (hover the bands). Aditya-L1 watches the Sun through two X-ray
+    windows: <b style="color:var(--blue)">SoLEXS (soft, 2–22 keV)</b> and
+    <b style="color:var(--accent)">HEL1OS (hard, 8–150 keV)</b>.</figcaption>
+  </figure>
+  <div class="grid g2">
+    <div class="card"><h4 style="color:var(--blue)">Soft X-rays = "how much is burning"</h4>
+      Thermal radiation from heated plasma. Tracks the <b>accumulated</b> energy — the flare's total
+      thermal output. Rises and peaks <i>after</i> the action. <b>SoLEXS</b> measures this.</div>
+    <div class="card"><h4 style="color:var(--accent)">Hard X-rays = "how fast it's igniting"</h4>
+      Non-thermal radiation from freshly-accelerated electrons. Tracks the <b>instantaneous</b> energy
+      input — it spikes <i>during</i> the explosive moment, early. <b>HEL1OS</b> measures this.</div>
+  </div>
+  <div class="call deep"><div class="lab">Why this distinction is the whole game</div>
+  Soft tells you a flare is <i>happening</i>. Hard tells you it's <i>happening right now, fast</i> — before
+  the soft-X-ray brightness has peaked. The relationship between them (the <b>Neupert effect</b>, §E2) is
+  exactly what buys us forecast lead time. This is why fusing both payloads beats either one alone.</div>
+</section>
+
+<!-- ================= E · MISSION ================= -->
+<section id="mission">
+  <h2><span class="num">E</span> Aditya-L1 &amp; its X-ray payloads <span class="track t-sci">Science</span></h2>
+  <h3>Where is it, and why there?</h3>
+  <p><b>Aditya-L1</b> is ISRO's first dedicated solar mission. It doesn't orbit Earth — it sits at the
+  <b>Sun–Earth Lagrange point L1</b>, about <b>1.5 million km</b> sunward of Earth, where the Sun's and
+  Earth's gravity balance so the spacecraft keeps pace with Earth. From L1 it gets an <b>uninterrupted,
+  never-eclipsed view of the Sun</b> — perfect for continuous monitoring.</p>
+  <figure>
+    <div id="l1geo"></div>
+    <figcaption>Sun–L1–Earth geometry (not to scale). At L1, Aditya-L1 sees the flare a few light-seconds
+    <i>before</i> Earth-orbit satellites — negligible at minute scale, which means
+    <b>Earth-based GOES flare timestamps are valid labels for our data</b> (§F).</figcaption>
+  </figure>
+  <div class="grid g2">
+    <div class="card"><h4 style="color:var(--blue)">SoLEXS — Solar Low Energy X-ray Spectrometer</h4>
+      <ul class="clean">
+        <li><b>Band:</b> 2–22 keV (soft)</li>
+        <li><b>Cadence:</b> 1 second</li>
+        <li><b>Two detectors:</b> <code>SDD1</code> (small 0.1&nbsp;mm² — handles bright/large flares without
+        saturating) &amp; <code>SDD2</code> (large 7.1&nbsp;mm² — sensitive to the faint quiet Sun)</li>
+        <li><b>Why two:</b> together they span the A→X dynamic range</li>
+      </ul></div>
+    <div class="card"><h4 style="color:var(--accent)">HEL1OS — High Energy L1 Orbiting X-ray Spectrometer</h4>
+      <ul class="clean">
+        <li><b>Band:</b> 8–150 keV (hard)</li>
+        <li><b>Detectors:</b> CdTe (8–70 keV) + CZT (20–150 keV)</li>
+        <li><b>FoV:</b> 6°×6° collimator</li>
+        <li><b>Role here:</b> the early-warning channel — fires during the impulsive phase</li>
+      </ul></div>
+  </div>
+</section>
+
+<!-- ================= E2 · NEUPERT ================= -->
+<section id="neupert">
+  <h2><span class="num">E2</span> Anatomy of a light curve + the Neupert effect <span class="track t-sci">Science → Engineering</span></h2>
+  <p>A <b>light curve</b> is just brightness (here: X-ray counts per second) plotted against time. Below is
+  the <b>real SoLEXS light curve from the day-file we already downloaded</b> (2026-06-15, detector SDD2).
+  Quiet Sun sits near <b>7 counts/s</b>; a real enhancement reaches <b>~95 counts/s</b> around 13:15 UTC.</p>
+  <figure>
+    <canvas id="lcReal" width="900" height="320" style="width:100%;height:auto"></canvas>
+    <div class="legend">
+      <span><span class="swatch" style="background:var(--blue)"></span>SoLEXS counts/s (2.4-min average)</span>
+      <span><span class="swatch" style="background:var(--accent)"></span>peak within block</span>
+      <span><span class="swatch" style="background:var(--green)"></span>adaptive quiet-Sun baseline</span>
+    </div>
+    <figcaption>Real Aditya-L1 SoLEXS data (decimated for the browser from 86,400 one-second samples).
+    The classical nowcaster watches for the count rate to rise sharply above the green baseline.</figcaption>
+  </figure>
+
+  <h3>The Neupert effect — the physical basis for forecasting</h3>
+  <p>Observed empirically and explained by flare physics: <b>the hard-X-ray light curve looks like the
+  <i>time-derivative</i> (rate of rise) of the soft-X-ray light curve.</b> Equivalently, soft X-rays are the
+  running <i>integral</i> of the hard. ~80% of large flares obey it.</p>
+  <p style="text-align:center;font-size:20px;font-family:var(--mono);color:var(--accent2);margin:18px 0">
+  HXR(t) &nbsp;≈&nbsp; d/dt&nbsp;SXR(t) &nbsp;&nbsp;⟺&nbsp;&nbsp; SXR(t) &nbsp;≈&nbsp; ∫ HXR&nbsp;dt</p>
+  <figure>
+    <canvas id="neupert" width="900" height="340" style="width:100%;height:auto"></canvas>
+    <div class="ctrls">
+      <button class="btn" id="npPlay">▶ Play</button>
+      <button class="btn alt" id="npReset">Reset</button>
+      <label>scrub time <input type="range" id="npScrub" min="0" max="1000" value="0"></label>
+    </div>
+    <div class="legend">
+      <span><span class="swatch" style="background:var(--accent)"></span>Hard X-ray (HEL1OS) — rises first</span>
+      <span><span class="swatch" style="background:var(--blue)"></span>Soft X-ray (SoLEXS) — peaks later</span>
+      <span><span class="swatch" style="background:var(--purple)"></span>d/dt of soft ≈ hard</span>
+    </div>
+    <figcaption>The hard channel peaks during the impulsive phase; the soft peak arrives
+    <b>minutes later</b>. That gap — between the hard-X-ray rise and the soft-X-ray peak — is the
+    <b>physically-grounded lead time</b> our forecaster exploits.</figcaption>
+  </figure>
+  <div class="call good"><div class="lab">Be honest about what "forecasting" means here</div>
+  Two horizons, two confidence levels:<br>
+  • <b>Short-horizon peak forecasting</b> (defensible &amp; strong): Neupert gives real minutes of warning
+  before the damaging soft-X-ray <i>peak</i>, because the hard channel already told us energy release began.<br>
+  • <b>Longer-horizon onset forecasting</b> (research frontier): predicting a flare <i>before any rise</i>
+  relies on subtle pre-flare microflares/brightenings. We pursue it, but report it with calibrated
+  uncertainty — we never claim more lead time than the physics supports.</div>
+</section>
+
+<!-- ================= F · DATA ================= -->
+<section id="data">
+  <h2><span class="num">F</span> The data — what we have &amp; how to read it <span class="track t-eng">Engineering</span></h2>
+  <h3>FITS, in 30 seconds</h3>
+  <p><b>FITS</b> (Flexible Image Transport System) is astronomy's standard file format: human-readable
+  80-character header "cards" in 2880-byte blocks, followed by binary data. A light curve lives in a
+  <b>binary table extension</b> with named columns. You read it with <code>astropy.io.fits</code> — or, as
+  we did to embed the real sample above, by parsing the blocks directly.</p>
+  <h3>The exact structure of our SoLEXS day-file</h3>
+  <p>From <code>AL1_SOLEXS_20260615_SDD2_L1.lc.gz</code>, decoded directly:</p>
+  <table>
+    <tr><th>Property</th><th>Value</th><th>Meaning</th></tr>
+    <tr><td><code>EXTNAME</code></td><td>RATE (OGIP LIGHTCURVE)</td><td>standard light-curve table</td></tr>
+    <tr><td>Columns</td><td><code>TIME</code> (f64), <code>COUNTS</code> (f64)</td><td>timestamp + counts/s</td></tr>
+    <tr><td><code>TIMEDEL</code></td><td>1</td><td>1-second cadence</td></tr>
+    <tr><td><code>NAXIS2</code></td><td>86,400</td><td>exactly one 24-h day</td></tr>
+    <tr><td>TIME epoch</td><td>Unix sec (MJDREF 40587)</td><td>1970 epoch → trivial to convert</td></tr>
+    <tr><td>Quiet level</td><td>≈ 7 counts/s (median)</td><td>the baseline to detect rises over</td></tr>
+    <tr><td>Day max</td><td>95 counts/s @ 13:15 UTC</td><td>a real enhancement (13.6× quiet)</td></tr>
+  </table>
+  <p>Sibling files per day/detector:</p>
+  <ul class="clean">
+    <li><code>.lc</code> — the light curve (what we model)</li>
+    <li><code>.gti</code> — <b>Good-Time-Intervals</b>: the windows where data is valid. <b>Always apply this</b>
+    to mask gaps/occultations before analysis (our file had only 2 NaN seconds — clean, but never assume).</li>
+    <li><code>.pi</code> — the energy spectrum (not needed for the light-curve task)</li>
+  </ul>
+  <p>HEL1OS ships separately as <code>HLS_YYYYMMDD_..._lev1.zip</code> (~12 h light curves). The pipeline
+  merges SoLEXS (soft) and HEL1OS (hard) onto a common 1-second grid.</p>
+
+  <h3>Labels: where "ground truth" comes from</h3>
+  <p>We don't have to label flares by hand. <b>NOAA's GOES X-ray flare catalog</b> (free) lists every flare's
+  start/peak/end time and class (A→X). Because Aditya-L1 at L1 sees the Sun essentially simultaneously with
+  Earth-orbit GOES (a few light-seconds difference — negligible), <b>those timestamps are valid labels for our
+  data</b>. Cross-reference catalog times → Aditya-L1 files → flare / pre-flare / quiet windows.</p>
+  <div class="call warn"><div class="lab">Rigour note · counts ≠ flux</div>
+  SoLEXS gives <i>counts/s</i>, not GOES <i>W/m²</i>. So we classify <i>relative</i> magnitude from SoLEXS and
+  use GOES for the ground-truth class label. State this assumption openly in the report — don't silently
+  pretend counts are flux.</div>
+
+  <h3>The 70 GB problem — and the smarter answer</h3>
+  <p>The full archive is ~70 GB. Don't brute-force it. Use the GOES catalog to download <b>only</b>
+  flare windows + their pre-flare windows + sampled quiet windows ≈ <b>4–6 GB</b> onto the 256 GB external
+  drive. Targeted selection is faster <i>and</i> a stronger methodology story for the report.</p>
+
+  <div class="call k"><div class="lab">⚠️ Environment blocker we already hit — fix it first</div>
+  This machine has <b>Python 3.14</b>, on which <code>astropy</code> has no prebuilt wheel and fails to
+  compile (needs MSVC). <b>Create a Python 3.11 environment</b> before anything else:
+  <pre><code># with uv (fast) — or use conda
+uv venv --python 3.11 .venv
+.venv\Scripts\activate
+uv pip install astropy numpy pandas scipy lightgbm scikit-learn matplotlib plotly streamlit sktime</code></pre>
+  Everything in §O assumes this 3.11 env.</div>
+</section>
+
+<!-- ================= L · METHODOLOGY ================= -->
+<section id="methodology">
+  <h2><span class="num">L</span> Methodology &amp; rigour <span class="track t-eng">Engineering</span></h2>
+  <p>Every choice below is justified against ISRO's <i>stated</i> evaluation criteria, not convenience.
+  This is the "fight-back" section — where we argue <i>why</i>, not just <i>what</i>.</p>
+
+  <h3>Two problems, two right tools</h3>
+  <div class="grid g2">
+    <div class="card"><h4>Nowcasting → classical, not ML</h4>
+      <p>Detecting an <i>ongoing</i> flare is a solved signal-processing problem: estimate an <b>adaptive
+      quiet-Sun baseline</b> (rolling median), then flag a sharp <b>rise-rate</b> above it with
+      persistence/hysteresis to kill false triggers. Run it independently on soft and hard, then merge into
+      one master catalogue.</p>
+      <p><b>Why not a classifier?</b> Operational catalogues (incl. GOES event lists) are built exactly this
+      way. It's interpretable, needs no training, generalises, and — with an adaptive baseline — catches both
+      faint A/B/C and giant M/X flares. A black-box here would be <i>strictly worse</i>: data-hungry and prone
+      to missing the rare strong events that matter most.</p></div>
+    <div class="card"><h4>Forecasting → hybrid ensemble</h4>
+      <p><b>Branch 1 · LightGBM</b> on engineered, Neupert-grounded features (hard/soft ratio + its
+      derivative, soft-flux slope &amp; curvature, variance, background level, time-since-last-flare).
+      Interpretable via SHAP — it can <i>tell you which precursor fired the alert</i>.</p>
+      <p><b>Branch 2 · MiniROCKET</b> on the raw dual-channel window — random convolutional kernels + a linear
+      head — to learn precursor <i>morphology</i> the hand-features miss.</p>
+      <p><b>Fusion</b> · calibrated probability combine → one <code>P(flare in next N min)</code>.</p></div>
+  </div>
+  <div class="call deep"><div class="lab">Why MiniROCKET and not a deep CNN/Transformer?</div>
+  ISRO rewards <b>precursor-pattern identification</b> and <b>detection across the dynamic range</b>, so a
+  raw-sequence learner earns its place. But flares — especially M/X — are <b>rare</b>, and a heavy deep net
+  would overfit that minority class and strain a 4 GB-VRAM RTX 3050. MiniROCKET is <b>deterministic,
+  CPU-only, fits in seconds, and is robust on small/imbalanced data</b> — near state-of-the-art on time-series
+  classification without the overfitting or hardware tax. It's the <i>minimal</i> addition that satisfies the
+  criteria. (A small 1D-CNN is kept as an optional GPU experiment, not the primary.)</div>
+
+  <h3>Evaluation — the part most teams get wrong</h3>
+  <p>Flares are a severe class-imbalance problem (mostly "no flare"). Plain accuracy is meaningless — a model
+  that always says "no flare" scores ~99%. The space-weather standard is the <b>True Skill Statistic</b>:</p>
+  <p style="text-align:center;font-size:20px;font-family:var(--mono);color:var(--accent2)">TSS = TPR − FPR</p>
+  <figure>
+    <canvas id="tssWidget" width="900" height="300" style="width:100%;height:auto"></canvas>
+    <div class="ctrls">
+      <label>decision threshold <input type="range" id="tssThresh" min="0" max="100" value="50"></label>
+      <span id="tssReadout" style="font-family:var(--mono);color:var(--text)"></span>
+    </div>
+    <figcaption>Move the threshold: watch TPR, FPR and TSS trade off. TSS = +1 is perfect, 0 is no skill
+    (a constant forecast scores 0 — that's why it survives class imbalance). We tune the operating
+    threshold to maximise TSS, directly serving ISRO's "high TPR / low FAR" criterion.</figcaption>
+  </figure>
+  <p>Reported alongside TSS: <b>HSS</b>, <b>ROC-AUC</b>, <b>Brier score</b> + a <b>reliability diagram</b>
+  (are the probabilities calibrated?), and a <b>lead-time distribution</b> (how many minutes before the peak
+  did we fire?). <b>Cross-validation is strictly time-ordered / walk-forward</b> — never random shuffling,
+  which would leak the future into the past.</p>
+</section>
+
+<!-- ================= F2 · TECH ================= -->
+<section id="tech">
+  <h2><span class="num">F2</span> Technologies to be used <span class="track t-isro">ISRO Submission · template p8</span></h2>
+  <table>
+    <tr><th>Layer</th><th>Tool</th><th>Why this one</th><th>License</th></tr>
+    <tr><td>FITS I/O</td><td>astropy</td><td>standard reader for SoLEXS/HEL1OS products + GTI</td><td>BSD</td></tr>
+    <tr><td>Numerics</td><td>numpy · pandas</td><td>time-series wrangling, alignment, resampling</td><td>BSD</td></tr>
+    <tr><td>Signal</td><td>scipy</td><td>detrending, smoothing, derivative, baseline</td><td>BSD</td></tr>
+    <tr><td>Forecaster A</td><td>LightGBM</td><td>fast, interpretable, sample-efficient on rare events</td><td>MIT</td></tr>
+    <tr><td>Forecaster B</td><td>MiniROCKET (sktime/pyts)</td><td>CPU, deterministic, SOTA-ish raw time-series</td><td>BSD</td></tr>
+    <tr><td>Calibration/metrics</td><td>scikit-learn</td><td>isotonic/Platt, TSS/HSS/ROC/Brier, blocked CV</td><td>BSD</td></tr>
+    <tr><td>Explainability</td><td>SHAP</td><td>"why this alert" — per-prediction precursor attribution</td><td>MIT</td></tr>
+    <tr><td>Figures</td><td>matplotlib · plotly</td><td>light curves, reliability, lead-time plots</td><td>BSD</td></tr>
+    <tr><td>Interface</td><td>Streamlit</td><td>fastest path to dual light curves + alerts + replay, ₹0</td><td>Apache-2.0</td></tr>
+    <tr><td>Env</td><td>Python 3.11 (uv/conda)</td><td>prebuilt wheels; avoids the 3.14 astropy build failure</td><td>PSF</td></tr>
+  </table>
+  <p>Every dependency is free and open-source, and the entire stack runs CPU-first on the target machine
+  (i5-13420H / RTX 3050 / 16 GB). GPU is optional, never required.</p>
+</section>
+
+<!-- ================= O · ROADMAP ================= -->
+<section id="roadmap">
+  <h2><span class="num">O</span> Implementation roadmap — Claude Code as senior developer <span class="track t-eng">Engineering</span></h2>
+  <p>This is how you actually build it. Each phase is a unit of work you hand to <b>Claude Code</b>: it writes
+  and runs the code; you review the verification output before moving on. Click a phase to expand.</p>
+  <figure><div id="ganttSvg"></div>
+    <figcaption>The nine build phases. Phases 3 (nowcast) and 5 (forecast) are the scored deliverables.</figcaption></figure>
+
+  <h3 class="no-print">How to drive Claude Code well</h3>
+  <ul class="clean no-print">
+    <li><b>One phase per session.</b> Give it the phase goal + the "definition of done" below; let it propose a plan before coding.</li>
+    <li><b>Always demand the verification artifact</b> (a plot, a metric, a printed table) — "show me it works," not "it's done."</li>
+    <li><b>Keep the repo skeleton fixed</b> so context stays cheap: <code>src/{io,labels,nowcast,features,forecast,eval,app}</code>, <code>data/</code>, <code>notebooks/</code>, <code>reports/</code>.</li>
+    <li><b>Feed it this guide.</b> The science + rigour rationale here is the spec; point Claude Code at it so its choices match.</li>
+  </ul>
+
+  <div id="phases">
+    <div class="phase"><div class="head"><span class="n">0</span><span class="t">Environment</span><span class="meta">½ day</span><span class="chev">▶</span></div>
+      <div class="body"><p><b>Goal:</b> a working Python 3.11 env that can read the held <code>.lc.gz</code>.</p>
+      <p><b>Claude Code does:</b> create the uv/conda env, install the §F2 stack, write a 10-line smoke test that
+      opens the file with astropy and prints column names + row count.</p>
+      <p><b>Definition of done:</b> <code>astropy</code> prints <code>['TIME','COUNTS']</code> and <code>86400</code>. No build errors.</p></div></div>
+
+    <div class="phase"><div class="head"><span class="n">1</span><span class="t">Data I/O &amp; fusion</span><span class="meta">1–2 days</span><span class="chev">▶</span></div>
+      <div class="body"><p><b>Goal:</b> a clean function <code>load_day(date) → DataFrame[time, soft_sdd1, soft_sdd2, hard]</code>.</p>
+      <p><b>Claude Code does:</b> readers for SoLEXS <code>.lc</code>/<code>.gti</code> and HEL1OS LC; apply GTI masks;
+      merge SDD1+SDD2 and soft+hard onto a common 1-s grid; handle NaN gaps; sanity plots.</p>
+      <p><b>Definition of done:</b> a plot of one real day with both channels aligned; gap regions visibly masked.</p></div></div>
+
+    <div class="phase"><div class="head"><span class="n">2</span><span class="t">Labeling (GOES)</span><span class="meta">1 day</span><span class="chev">▶</span></div>
+      <div class="body"><p><b>Goal:</b> labelled windows for training.</p>
+      <p><b>Claude Code does:</b> fetch the GOES XRS flare catalog; cross-reference timestamps to our files;
+      emit <code>flare</code>/<code>pre-flare</code>/<code>quiet</code> windows + class (A→X); store as parquet.</p>
+      <p><b>Definition of done:</b> the 13:15 enhancement in our day-file lines up with a GOES catalog entry.</p></div></div>
+
+    <div class="phase"><div class="head"><span class="n">3</span><span class="t">Nowcasting (classical)</span><span class="meta">2 days · scored</span><span class="chev">▶</span></div>
+      <div class="body"><p><b>Goal:</b> the automated master catalogue (ISRO deliverable #1).</p>
+      <p><b>Claude Code does:</b> adaptive-baseline + rise-rate detector per channel with hysteresis; merge soft+hard
+      detections; classify by relative peak; write a catalogue table.</p>
+      <p><b>Definition of done:</b> detects known low- AND high-class flares in held days; catalogue validated vs GOES;
+      report per-class recall.</p></div></div>
+
+    <div class="phase"><div class="head"><span class="n">4</span><span class="t">Feature engineering</span><span class="meta">1–2 days</span><span class="chev">▶</span></div>
+      <div class="body"><p><b>Goal:</b> the Neupert feature matrix.</p>
+      <p><b>Claude Code does:</b> rolling-window features — hard/soft ratio + d/dt, soft slope &amp; curvature,
+      variance/fluctuation, background, time-since-last-flare — at multiple window lengths.</p>
+      <p><b>Definition of done:</b> feature matrix + a quick LightGBM importance plot showing ratio-derivative ranks high.</p></div></div>
+
+    <div class="phase"><div class="head"><span class="n">5</span><span class="t">Forecasting models</span><span class="meta">3–4 days · scored</span><span class="chev">▶</span></div>
+      <div class="body"><p><b>Goal:</b> calibrated <code>P(flare in next N min)</code> with lead time (ISRO deliverable #2).</p>
+      <p><b>Claude Code does:</b> train LightGBM + MiniROCKET under <b>time-blocked CV</b>; calibrate (isotonic);
+      fuse; tune the threshold on TSS.</p>
+      <p><b>Definition of done:</b> TSS reported on a held-out time block; lead-time distribution plotted; no temporal leakage.</p></div></div>
+
+    <div class="phase"><div class="head"><span class="n">6</span><span class="t">Evaluation</span><span class="meta">1–2 days</span><span class="chev">▶</span></div>
+      <div class="body"><p><b>Goal:</b> defensible numbers for the three ISRO criteria.</p>
+      <p><b>Claude Code does:</b> TSS/HSS/ROC-AUC/Brier + reliability diagram + lead-time histogram + per-class recall;
+      honest peak-vs-onset breakdown.</p>
+      <p><b>Definition of done:</b> a one-page metrics report; every ISRO criterion has a number next to it.</p></div></div>
+
+    <div class="phase"><div class="head"><span class="n">7</span><span class="t">Streamlit dashboard</span><span class="meta">2–3 days · scored</span><span class="chev">▶</span></div>
+      <div class="body"><p><b>Goal:</b> the alert interface (ISRO deliverable #3) — see §K for the wireframe.</p>
+      <p><b>Claude Code does:</b> dual light-curve panel + hard/soft ratio panel + alert banner (green/amber/red) +
+      forecast gauge + replay timeline + catalogue table.</p>
+      <p><b>Definition of done:</b> replay a real day; the banner flips to red and an alert fires <i>before</i> the soft peak.</p></div></div>
+
+    <div class="phase"><div class="head"><span class="n">8</span><span class="t">Report &amp; deck</span><span class="meta">1 day</span><span class="chev">▶</span></div>
+      <div class="body"><p><b>Goal:</b> the ≤3-page PS-15 methodology report + the ISRO deck.</p>
+      <p><b>Claude Code does:</b> assemble methodology + assumptions + uncertainty estimation; export the ISRO-tagged
+      sections of this guide (Ctrl+P) into the submission template.</p>
+      <p><b>Definition of done:</b> report ≤3 pages; deck matches <code>template.pdf</code> sections 1-1.</p></div></div>
+  </div>
+</section>
+
+<!-- ================= G · OPPORTUNITY ================= -->
+<section id="opportunity">
+  <h2><span class="num">G</span> Opportunity &amp; USP <span class="track t-isro">ISRO Submission · template p3</span></h2>
+  <h3>How is it different from existing ideas?</h3>
+  <p>Most flare tools use a <b>single channel</b> (usually soft X-rays) from <b>Earth-orbit</b> satellites, and
+  most "forecasts" are really detections. HELIOGRAPH is different on three axes:</p>
+  <div class="grid g3">
+    <div class="card"><div class="ic">🔗</div><h4>Dual-payload fusion</h4>
+      It combines <b>SoLEXS soft + HEL1OS hard</b> from the <b>L1 vantage</b> — exploiting both channels, not one.</div>
+    <div class="card"><div class="ic">⏱️</div><h4>Physics-grounded lead time</h4>
+      It forecasts the damaging soft-X-ray peak using the <b>Neupert effect</b> — a real mechanism, not a curve-fit.</div>
+    <div class="card"><div class="ic">📏</div><h4>Honest, standard evaluation</h4>
+      <b>TSS-driven</b>, calibrated, time-blocked — the metrics the space-weather community actually trusts.</div>
+  </div>
+  <h3>How will it solve the problem?</h3>
+  <p>Nowcasting gives operators an instant, automated flare catalogue. Forecasting gives them the one thing
+  they can't buy otherwise — <b>minutes of warning before the peak</b> — to safe-mode satellites, hold GPS-critical
+  operations and protect grids. It runs offline on commodity hardware, so it's deployable anywhere ISRO needs it.</p>
+  <div class="call good"><div class="lab">USP in one sentence</div>
+  <b>The only dual-payload, L1-vantage flare system that turns the Neupert effect into calibrated, TSS-validated
+  lead-time warnings — fully reproducible at ₹0 on a laptop.</b></div>
+</section>
+
+<!-- ================= H · FEATURES ================= -->
+<section id="features">
+  <h2><span class="num">H</span> Features <span class="track t-isro">ISRO Submission · template p4</span></h2>
+  <div class="grid g2">
+    <div class="card"><div class="ic">🗂️</div><h4>1 · Automated nowcast catalogue</h4>
+      Real-time flare detection on soft + hard channels, merged into one master catalogue with onset/peak/end,
+      relative class, and signal-to-noise — generated without manual intervention.</div>
+    <div class="card"><div class="ic">⏱️</div><h4>2 · Calibrated forecast with lead time</h4>
+      <code>P(flare in next N min)</code> with a calibrated confidence and a measured lead-time distribution —
+      the headline ISRO metric.</div>
+    <div class="card"><div class="ic">🚨</div><h4>3 · Live dashboard with visual alerts</h4>
+      Dual light curves + hard/soft ratio + a green/amber/red alert banner that flips before the soft peak,
+      with a replay mode over historical days.</div>
+    <div class="card"><div class="ic">📐</div><h4>4 · Full A→X dynamic range</h4>
+      Adaptive baselining + dual SoLEXS detectors detect both faint A/B/C and giant M/X flares — the
+      "low- and high-class" criterion.</div>
+    <div class="card"><div class="ic">🔍</div><h4>5 · Explainable alerts (SHAP)</h4>
+      Every forecast says <i>why</i> — which precursor (e.g. rising hard/soft ratio) drove it — so scientists
+      can trust and audit it.</div>
+    <div class="card"><div class="ic">💻</div><h4>6 · Offline &amp; reproducible</h4>
+      No cloud, no cost, no proprietary software. Runs end-to-end on a single laptop from public data.</div>
+  </div>
+</section>
+
+<!-- ================= I · FLOW ================= -->
+<section id="flow">
+  <h2><span class="num">I</span> Process flow &amp; use-case <span class="track t-isro">ISRO Submission · template p5</span></h2>
+  <figure><div id="flowSvg"></div>
+    <figcaption>End-to-end data flow: raw payload files → ingest/GTI → preprocess &amp; fuse → the two parallel
+    engines (classical nowcast ‖ ML forecast) → catalogue + alerts → dashboard.</figcaption></figure>
+  <figure><div id="usecaseSvg"></div>
+    <figcaption>Use-case view: who uses the system and for what.</figcaption></figure>
+</section>
+
+<!-- ================= J · ARCHITECTURE ================= -->
+<section id="arch">
+  <h2><span class="num">J</span> Architecture <span class="track t-isro">ISRO Submission · template p7</span></h2>
+  <figure><div id="archSvg"></div>
+    <figcaption>Layered architecture. The forecast path (LightGBM + MiniROCKET → fusion → calibration) and the
+    classical nowcast path run in parallel off the same fused, GTI-clean time series.</figcaption></figure>
+</section>
+
+<!-- ================= K · WIREFRAMES ================= -->
+<section id="wireframe">
+  <h2><span class="num">K</span> Wireframes / mockups <span class="track t-isro">ISRO Submission · template p6</span></h2>
+  <figure><div id="wireSvg"></div>
+    <figcaption>The Streamlit dashboard. Top: dual light curves with the live playhead. Middle: hard/soft ratio
+    (the precursor) + the forecast gauge. The alert banner spans the top; the catalogue table sits below.</figcaption></figure>
+  <div class="grid g3" style="margin-top:8px">
+    <div class="alertbar green"><span class="dot"></span>QUIET — no flare activity</div>
+    <div class="alertbar amber"><span class="dot"></span>WATCH — precursor rising</div>
+    <div class="alertbar red"><span class="dot"></span>ALERT — flare forecast, ~7 min lead</div>
+  </div>
+</section>
+
+<!-- ================= M · COST ================= -->
+<section id="cost">
+  <h2><span class="num">M</span> Estimated implementation cost <span class="track t-isro">ISRO Submission · template p9</span></h2>
+  <table>
+    <tr><th>Item</th><th>Cost</th><th>Note</th></tr>
+    <tr><td>Aditya-L1 SoLEXS + HEL1OS data</td><td>₹0</td><td>free via ISSDC PRADAN (registered)</td></tr>
+    <tr><td>GOES flare catalog (labels)</td><td>₹0</td><td>free, NOAA</td></tr>
+    <tr><td>Software stack</td><td>₹0</td><td>all open-source (BSD/MIT/Apache)</td></tr>
+    <tr><td>Compute</td><td>₹0</td><td>existing laptop — i5-13420H / RTX 3050 / 16 GB</td></tr>
+    <tr><td>Storage</td><td>₹0</td><td>existing 256 GB external drive (~5 GB used)</td></tr>
+    <tr><td>Hosting (demo)</td><td>₹0</td><td>Streamlit runs locally; optional free HF Spaces</td></tr>
+    <tr><td><b>Total</b></td><td><b>₹0</b></td><td>only real input is engineering time</td></tr>
+  </table>
+  <div class="stat"><b>₹0</b><span>capital cost</span></div>
+  <div class="stat"><b>~5 GB</b><span>targeted data</span></div>
+  <div class="stat"><b>~2 wk</b><span>build w/ Claude Code</span></div>
+  <div class="stat"><b>CPU</b><span>first; GPU optional</span></div>
+</section>
+
+<!-- ================= CLOSE ================= -->
+<section id="close">
+  <h2>Close &amp; references</h2>
+  <p>HELIOGRAPH turns two ISRO payloads and one piece of solar physics — the Neupert effect — into a
+  calibrated, honestly-evaluated, zero-cost flare warning system. The science above is the spec; the roadmap
+  is the build. Hand it to Claude Code, phase by phase, and verify every step.</p>
+  <h4>Verified sources</h4>
+  <ul class="src">
+    <li>SoLEXS instrument — <i>Solar Physics</i> (2025): <a href="https://link.springer.com/article/10.1007/s11207-025-02494-0">10.1007/s11207-025-02494-0</a>; arXiv <a href="https://arxiv.org/abs/2509.26292">2509.26292</a></li>
+    <li>HEL1OS instrument — <i>Solar Physics</i> (2025): <a href="https://link.springer.com/article/10.1007/s11207-025-02543-8">10.1007/s11207-025-02543-8</a>; arXiv <a href="https://arxiv.org/abs/2512.12679">2512.12679</a></li>
+    <li>Neupert effect — <a href="https://en.wikipedia.org/wiki/Neupert_effect">overview</a>; Dennis &amp; Zarro (1993) <i>Solar Physics</i> 146, 177</li>
+    <li>True Skill Statistic &amp; flare-forecast evaluation — Bloomfield et al. (2012); space-weather forecasting literature</li>
+    <li>GOES X-ray flare catalog &amp; A–X classification — NOAA SWPC</li>
+    <li>Aditya-L1 data — ISRO ISSDC PRADAN portal</li>
+  </ul>
+  <p class="footer">HELIOGRAPH · Built for Bharatiya Antariksh Hackathon 2026 · Problem Statement 15 ·
+  Real SoLEXS sample: 2026-06-15 SDD2, parsed from the downloaded day-file. Diagrams are hand-authored SVG/canvas;
+  the illustrative Neupert animation is synthetic and labelled as such.</p>
+</section>
+
+</main>
+</div>
+
+<script id="solexs-data" type="application/json">{"block_s":144,"date":"2026-06-15","det":"SDD2","median":7.0,"max":95.0,"peak_sec":47726,"avg":[4.0,4.1,4.7,4.5,3.9,3.6,3.6,4.0,4.1,4.0,3.9,4.1,4.0,4.1,3.8,3.2,3.1,3.3,3.2,3.1,3.2,3.0,3.1,3.3,3.3,4.0,3.5,3.7,3.4,3.7,3.3,3.3,3.4,3.6,3.6,4.2,4.6,4.6,3.9,4.1,4.1,3.5,4.0,4.1,4.3,4.4,4.5,4.1,8.4,11.0,11.4,14.0,24.0,28.0,32.2,38.6,34.9,24.0,18.1,13.2,9.3,7.1,5.8,5.9,6.7,8.5,8.9,8.8,8.5,8.5,8.7,7.9,7.0,6.3,5.3,6.0,5.6,5.7,6.7,7.7,8.7,9.8,9.0,8.4,7.1,7.2,7.3,7.3,8.4,8.6,9.3,8.5,8.9,8.8,8.9,8.9,8.8,8.2,8.3,8.0,7.4,7.0,7.5,7.8,9.3,12.3,14.2,14.5,14.6,13.5,13.9,11.2,9.8,8.5,7.3,7.4,6.7,6.2,6.7,6.7,6.6,6.0,6.4,6.5,6.2,6.2,6.7,6.5,6.9,6.8,6.8,6.7,7.0,6.6,6.0,6.0,5.6,5.5,5.5,5.0,4.6,4.5,3.9,4.3,4.8,4.9,4.5,4.4,4.1,4.3,4.2,4.2,5.1,5.9,5.5,5.3,5.4,7.1,7.2,7.0,8.5,7.7,5.9,5.2,5.1,4.6,4.3,4.2,4.0,4.3,4.3,4.6,5.0,4.9,5.2,6.8,9.1,9.6,10.1,8.7,7.5,6.9,6.8,9.2,10.3,8.5,8.5,8.1,8.8,15.4,19.1,16.8,13.4,12.8,11.7,10.5,10.1,10.5,10.1,9.4,9.3,10.2,9.9,9.1,9.0,8.6,8.4,8.8,9.0,9.7,10.5,12.2,12.4,12.9,12.6,13.4,14.1,15.2,14.9,14.4,14.3,16.3,22.1,28.3,30.1,27.5,21.8,19.3,17.0,16.6,14.8,13.5,12.2,11.6,11.0,10.5,9.8,9.2,9.2,8.8,8.7,7.5,7.4,7.1,7.1,7.2,8.4,25.9,51.6,30.1,25.0,21.9,17.1,15.6,15.7,13.1,12.3,10.7,9.7,9.2,8.5,8.2,7.9,7.3,6.7,6.7,6.7,6.3,6.6,7.0,6.7,6.9,7.0,6.4,6.8,6.9,7.0,6.6,6.2,6.5,6.0,5.9,5.8,6.0,6.9,7.1,7.1,7.3,8.9,9.7,8.3,7.9,7.7,6.7,12.7,19.4,31.4,29.4,19.7,16.1,13.8,13.2,12.6,12.7,11.0,11.1,10.8,11.4,11.0,13.1,12.8,11.3,10.5,11.0,10.1,9.2,9.2,11.0,12.4,13.5,12.3,11.0,10.9,10.1,12.1,10.6,10.3,8.9,8.4,8.4,9.0,35.4,8.2,8.8,8.6,8.2,7.8,7.4,7.6,7.3,7.4,8.0,7.5,7.3,7.2,5.6,5.6,5.9,5.6,5.3,5.7,5.6,5.7,5.9,7.0,8.1,9.3,10.5,12.7,10.0,8.6,8.1,8.1,7.4,7.5,9.0,6.3,7.2,7.9,6.9,7.7,9.8,9.9,10.3,10.8,10.2,9.8,8.2,6.9,5.6,5.3,5.1,5.4,5.9,6.2,6.1,5.6,5.5,6.0,6.7,6.3,6.8,6.3,6.3,6.6,6.7,6.8,6.9,7.1,6.4,6.4,6.3,5.9,6.2,6.9,6.8,7.1,6.2,6.0,5.6,5.8,5.5,5.9,6.9,9.7,6.7,5.7,5.3,8.1,5.0,4.9,4.9,4.9,5.4,6.6,8.1,8.5,8.1,7.3,6.4,6.5,6.0,5.8,6.2,6.5,7.9,9.5,10.7,12.2,11.8,11.6,11.2,11.4,13.0,13.7,12.7,11.6,8.9,9.3,8.6,8.5,9.2,7.8,7.4,6.6,7.2,7.1,7.7,8.5,8.8,9.6,6.1,5.9,5.8,5.6,6.1,6.4,6.5,5.9,6.2,12.4,46.4,12.9,8.9,8.0,7.0,7.6,7.3,6.2,5.5,5.3,5.8,4.7,4.1,3.9,3.7,3.7,3.8,3.8,3.8,3.8,3.4,3.9,3.7,4.2,4.8,4.3,4.4,5.0,3.7,3.5,3.5,3.4,3.7,3.8,3.6,4.4,4.4,4.6,7.4,9.2,8.3,8.1,9.5,9.5,11.8,10.6,7.4,12.4,8.7,7.0,6.3,5.5,4.8,4.9,4.8,4.6,4.4,4.3,4.4,4.5,4.7,4.7,4.3,4.1,4.2,4.4,6.9,6.4,6.0,5.4,5.3,5.1,5.1,5.1,5.0,4.8,4.2,4.8,4.1,4.3,3.9,3.9,3.9,3.8,4.0,4.5,7.3,6.4,5.9,5.0,4.7,4.9,5.2,4.9,5.7,5.4,4.8,5.0,5.8,5.6,5.4,5.1,4.6,4.3,4.3,4.2,4.5,4.8,4.6,4.8,4.8,5.4,5.0,5.1,5.1,5.5,6.0,5.8,6.6,6.4,7.2,8.0,8.6,8.7,8.6,9.8,11.6,13.5,14.2],"peak":[11.0,10.0,12.0,10.0,13.0,9.0,11.0,10.0,10.0,13.0,9.0,10.0,11.0,9.0,11.0,8.0,9.0,8.0,8.0,8.0,9.0,9.0,9.0,9.0,8.0,9.0,11.0,10.0,9.0,11.0,9.0,9.0,12.0,10.0,10.0,11.0,12.0,13.0,12.0,11.0,10.0,10.0,10.0,10.0,11.0,10.0,10.0,10.0,17.0,18.0,22.0,29.0,39.0,43.0,50.0,53.0,57.0,36.0,30.0,25.0,17.0,18.0,14.0,14.0,14.0,16.0,19.0,16.0,18.0,20.0,18.0,17.0,12.0,14.0,12.0,11.0,13.0,12.0,14.0,19.0,17.0,18.0,18.0,19.0,16.0,15.0,17.0,16.0,16.0,18.0,18.0,18.0,19.0,18.0,21.0,19.0,19.0,18.0,15.0,18.0,17.0,12.0,15.0,18.0,16.0,21.0,23.0,28.0,23.0,22.0,24.0,19.0,22.0,16.0,15.0,15.0,14.0,13.0,14.0,13.0,15.0,16.0,15.0,14.0,12.0,12.0,16.0,15.0,14.0,14.0,13.0,15.0,19.0,14.0,15.0,12.0,12.0,12.0,13.0,13.0,11.0,11.0,11.0,9.0,12.0,13.0,10.0,11.0,9.0,11.0,11.0,10.0,10.0,14.0,13.0,12.0,12.0,13.0,15.0,17.0,16.0,18.0,14.0,13.0,11.0,12.0,13.0,10.0,10.0,10.0,11.0,11.0,12.0,11.0,12.0,16.0,21.0,19.0,21.0,20.0,16.0,14.0,17.0,16.0,19.0,16.0,16.0,21.0,17.0,29.0,32.0,31.0,24.0,24.0,21.0,20.0,18.0,22.0,18.0,17.0,18.0,20.0,16.0,16.0,16.0,18.0,17.0,17.0,14.0,19.0,20.0,20.0,23.0,24.0,22.0,25.0,27.0,31.0,24.0,26.0,25.0,29.0,34.0,42.0,47.0,43.0,35.0,30.0,28.0,29.0,26.0,26.0,22.0,20.0,23.0,21.0,17.0,19.0,18.0,17.0,17.0,17.0,21.0,15.0,14.0,15.0,17.0,60.0,73.0,50.0,38.0,34.0,30.0,31.0,28.0,25.0,23.0,21.0,17.0,19.0,15.0,15.0,15.0,13.0,13.0,17.0,16.0,13.0,16.0,15.0,13.0,15.0,16.0,14.0,14.0,14.0,15.0,13.0,14.0,14.0,15.0,13.0,14.0,14.0,14.0,14.0,17.0,16.0,20.0,19.0,17.0,18.0,16.0,13.0,27.0,36.0,56.0,52.0,32.0,27.0,26.0,23.0,23.0,25.0,20.0,20.0,20.0,19.0,20.0,23.0,23.0,24.0,20.0,22.0,20.0,17.0,18.0,20.0,23.0,25.0,23.0,19.0,21.0,22.0,24.0,20.0,20.0,19.0,19.0,18.0,19.0,95.0,16.0,16.0,18.0,16.0,18.0,15.0,16.0,13.0,15.0,19.0,17.0,13.0,15.0,12.0,13.0,12.0,16.0,12.0,12.0,12.0,12.0,14.0,15.0,16.0,19.0,19.0,26.0,21.0,21.0,17.0,18.0,16.0,17.0,16.0,13.0,16.0,20.0,16.0,17.0,18.0,19.0,17.0,21.0,17.0,21.0,15.0,15.0,14.0,12.0,12.0,13.0,13.0,13.0,12.0,12.0,12.0,12.0,16.0,12.0,18.0,14.0,15.0,13.0,12.0,16.0,15.0,13.0,13.0,12.0,14.0,13.0,11.0,17.0,16.0,16.0,15.0,15.0,12.0,12.0,12.0,13.0,14.0,20.0,13.0,12.0,13.0,19.0,11.0,12.0,14.0,10.0,10.0,13.0,18.0,17.0,17.0,13.0,14.0,15.0,14.0,14.0,12.0,12.0,16.0,19.0,19.0,22.0,20.0,21.0,19.0,23.0,25.0,23.0,24.0,22.0,18.0,19.0,17.0,16.0,20.0,14.0,14.0,14.0,16.0,15.0,15.0,19.0,20.0,18.0,13.0,14.0,14.0,11.0,16.0,13.0,13.0,12.0,14.0,38.0,91.0,23.0,18.0,14.0,13.0,14.0,14.0,13.0,12.0,13.0,13.0,12.0,10.0,10.0,9.0,10.0,8.0,11.0,10.0,9.0,9.0,9.0,9.0,12.0,9.0,10.0,12.0,11.0,9.0,10.0,8.0,8.0,9.0,10.0,10.0,9.0,10.0,10.0,18.0,19.0,15.0,17.0,19.0,20.0,25.0,27.0,17.0,25.0,18.0,15.0,17.0,11.0,12.0,12.0,11.0,9.0,10.0,9.0,11.0,11.0,11.0,12.0,11.0,12.0,10.0,12.0,14.0,17.0,15.0,13.0,14.0,12.0,11.0,12.0,14.0,13.0,9.0,15.0,9.0,10.0,10.0,9.0,10.0,9.0,11.0,11.0,16.0,12.0,14.0,11.0,11.0,11.0,13.0,12.0,14.0,13.0,11.0,13.0,12.0,13.0,13.0,12.0,10.0,13.0,12.0,10.0,11.0,11.0,15.0,10.0,12.0,12.0,12.0,13.0,11.0,12.0,12.0,12.0,14.0,13.0,15.0,15.0,16.0,17.0,17.0,20.0,21.0,24.0,23.0]}</script>
+<script>
+"use strict";
+/* ---------- data ---------- */
+let SOLEXS=null;
+try{ SOLEXS=JSON.parse(document.getElementById('solexs-data').textContent); }catch(e){ SOLEXS=null; }
+
+/* ---------- nav scrollspy + progress ---------- */
+const navLinks=[...document.querySelectorAll('#nav a')];
+const secs=[...document.querySelectorAll('section[id]')];
+const prog=document.getElementById('prog');
+function onScroll(){
+  const h=document.documentElement;
+  prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+  let cur=secs[0]?.id;
+  for(const s of secs){ if(s.getBoundingClientRect().top<140) cur=s.id; }
+  navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));
+}
+document.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+/* ---------- collapsible phases ---------- */
+document.querySelectorAll('.phase>.head').forEach(h=>{
+  h.addEventListener('click',()=>h.parentElement.classList.toggle('open'));
+});
+document.querySelector('.phase')?.classList.add('open');
+
+/* ---------- helpers ---------- */
+const NS='http://www.w3.org/2000/svg';
+function el(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function svg(w,h){const s=el('svg',{viewBox:`0 0 ${w} ${h}`,width:'100%',style:'max-width:100%;height:auto'});return s;}
+function txt(s,x,y,o={}){const t=el('text',{x,y,fill:o.fill||'#cfd8ea','font-size':o.fs||14,'font-family':'var(--sans)','text-anchor':o.a||'start','font-weight':o.fw||400});t.textContent=s;s&&t;return t;}
+function box(x,y,w,h,o={}){return el('rect',{x,y,width:w,height:h,rx:o.r??10,fill:o.fill||'#16203a',stroke:o.stroke||'#243150','stroke-width':o.sw||1.5});}
+
+/* ---------- flare ladder ---------- */
+(function(){
+  const w=860,h=140,s=svg(w,h);
+  const cls=[['A','10⁻⁸','#3b4a6b'],['B','10⁻⁷','#4a6fa5'],['C','10⁻⁶','#4aa8ff'],['M','10⁻⁵','#ffa726'],['X','10⁻⁴+','#f0506e']];
+  const bw=150;
+  cls.forEach((c,i)=>{
+    const x=20+i*bw, bh=30+i*20, y=h-20-bh;
+    s.appendChild(box(x,y,bw-14,bh,{fill:c[2],stroke:c[2],r:8}));
+    s.appendChild(txt(c[0],x+(bw-14)/2,y-8,{a:'middle',fw:800,fs:20,fill:c[2]}));
+    s.appendChild(txt(c[1]+' W/m²',x+(bw-14)/2,h-4,{a:'middle',fs:12,fill:'#8a96ad'}));
+  });
+  s.appendChild(txt('weaker / frequent',20,18,{fs:12,fill:'#5a6680'}));
+  s.appendChild(txt('stronger / rarer →',w-20,18,{a:'end',fs:12,fill:'#5a6680'}));
+  document.getElementById('flareLadder').appendChild(s);
+})();
+
+/* ---------- EM spectrum ---------- */
+(function(){
+  const w=860,h=120,s=svg(w,h);
+  const bands=[['Radio','#2d3b57'],['Micro','#365084'],['IR','#6b4f9e'],['Visible','#34d399'],['UV','#a78bfa'],['Soft X-ray\n2–22 keV','#4aa8ff'],['Hard X-ray\n8–150 keV','#ff6b1a'],['Gamma','#f0506e']];
+  const bw=w/bands.length;
+  bands.forEach((b,i)=>{
+    const x=i*bw, hl=(i===5||i===6);
+    const r=box(x+3,30,bw-6,50,{fill:b[1],stroke:hl?'#fff':b[1],sw:hl?2.5:1,r:6});
+    s.appendChild(r);
+    b[0].split('\n').forEach((ln,j)=>s.appendChild(txt(ln,x+bw/2,52+j*15,{a:'middle',fs:11,fw:hl?800:600,fill:'#0a0e1a'})));
+  });
+  s.appendChild(txt('low energy / long wavelength',6,20,{fs:12,fill:'#5a6680'}));
+  s.appendChild(txt('high energy / short wavelength →',w-6,20,{a:'end',fs:12,fill:'#5a6680'}));
+  s.appendChild(txt('Aditya-L1 X-ray windows',(5.5)*bw,104,{a:'middle',fs:12,fw:700,fill:'#ffa726'}));
+  document.getElementById('emSpectrum').appendChild(s);
+})();
+
+/* ---------- L1 geometry ---------- */
+(function(){
+  const w=860,h=200,s=svg(w,h);
+  s.appendChild(el('circle',{cx:80,cy:100,r:46,fill:'url(#sun)'}));
+  const defs=el('defs',{});const g=el('radialGradient',{id:'sun'});
+  g.appendChild(el('stop',{offset:'0%','stop-color':'#fff4cc'}));g.appendChild(el('stop',{offset:'100%','stop-color':'#ff8a1a'}));
+  defs.appendChild(g);s.appendChild(defs);
+  s.appendChild(txt('SUN',80,104,{a:'middle',fw:800,fs:14,fill:'#7a3b00'}));
+  s.appendChild(el('line',{x1:126,y1:100,x2:760,y2:100,stroke:'#243150','stroke-width':2,'stroke-dasharray':'4 4'}));
+  s.appendChild(el('circle',{cx:790,cy:100,r:26,fill:'#2b6cb0'}));
+  s.appendChild(txt('EARTH',790,104,{a:'middle',fw:700,fs:12,fill:'#fff'}));
+  s.appendChild(el('circle',{cx:660,cy:100,r:7,fill:'#ff6b1a',stroke:'#fff','stroke-width':1.5}));
+  s.appendChild(txt('Aditya-L1',660,78,{a:'middle',fw:700,fs:13,fill:'#ffa726'}));
+  s.appendChild(txt('L1 · 1.5M km sunward of Earth',660,134,{a:'middle',fs:12,fill:'#8a96ad'}));
+  s.appendChild(txt('uninterrupted view of the Sun · never eclipsed',430,170,{a:'middle',fs:13,fill:'#8a96ad'}));
+  document.getElementById('l1geo').appendChild(s);
+})();
+
+/* ---------- real light curve (canvas) ---------- */
+(function(){
+  const cv=document.getElementById('lcReal');if(!cv)return;const ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height,pad=44;
+  ctx.fillStyle='#0d1322';ctx.fillRect(0,0,W,H);
+  if(!SOLEXS){ctx.fillStyle='#8a96ad';ctx.fillText('sample data unavailable',20,20);return;}
+  const avg=SOLEXS.avg,pk=SOLEXS.peak,n=avg.length;
+  const maxY=SOLEXS.max*1.1, minY=0;
+  const X=i=>pad+(i/(n-1))*(W-pad-14);
+  const Y=v=>H-pad-((v-minY)/(maxY-minY))*(H-pad-14);
+  // grid + axes
+  ctx.strokeStyle='#1c2740';ctx.lineWidth=1;ctx.fillStyle='#5a6680';ctx.font='11px sans-serif';
+  for(let hh=0;hh<=24;hh+=4){const x=pad+(hh/24)*(W-pad-14);ctx.beginPath();ctx.moveTo(x,14);ctx.lineTo(x,H-pad);ctx.stroke();ctx.fillText(hh+'h',x-6,H-pad+16);}
+  for(let g=0;g<=maxY;g+=20){const y=Y(g);ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(W-14,y);ctx.stroke();ctx.fillText(g+'',6,y+3);}
+  ctx.fillText('counts/s',6,11);
+  // peak (light)
+  ctx.strokeStyle='rgba(255,107,26,.5)';ctx.lineWidth=1;ctx.beginPath();
+  pk.forEach((v,i)=>{if(v==null)return;const x=X(i),y=Y(v);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();
+  // baseline (median)
+  ctx.strokeStyle='#34d399';ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(pad,Y(SOLEXS.median));ctx.lineTo(W-14,Y(SOLEXS.median));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#34d399';ctx.fillText('quiet ≈ '+SOLEXS.median+'/s',pad+6,Y(SOLEXS.median)-5);
+  // avg (main)
+  ctx.strokeStyle='#4aa8ff';ctx.lineWidth=2;ctx.beginPath();
+  avg.forEach((v,i)=>{if(v==null)return;const x=X(i),y=Y(v);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();
+  // mark flare
+  const ps=SOLEXS.peak_sec, pi=Math.round(ps/86400*(n-1));
+  ctx.fillStyle='#f0506e';ctx.beginPath();ctx.arc(X(pi),Y(SOLEXS.max),5,0,7);ctx.fill();
+  ctx.fillStyle='#f0506e';ctx.font='12px sans-serif';
+  ctx.fillText('real enhancement · '+SOLEXS.max+'/s @ '+(ps/3600).toFixed(1)+'h UTC',X(pi)-150,Y(SOLEXS.max)-10);
+})();
+
+/* ---------- Neupert animator ---------- */
+(function(){
+  const cv=document.getElementById('neupert');if(!cv)return;const ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height,pad=40,N=1000;
+  // synthetic: hard = sum of impulsive gaussians; soft = cumulative integral
+  const hard=new Array(N),soft=new Array(N);let acc=0;
+  function gauss(x,mu,sg,A){return A*Math.exp(-((x-mu)**2)/(2*sg*sg));}
+  for(let i=0;i<N;i++){
+    const t=i;
+    let hv=gauss(t,360,34,1)+gauss(t,300,20,.5)+gauss(t,420,26,.55)+0.01;
+    hard[i]=hv; acc+=hv; soft[i]=acc;
+  }
+  const sMax=soft[N-1],hMax=Math.max(...hard);
+  const deriv=i=>i?(soft[i]-soft[i-1]):0; const dMax=Math.max(...soft.map((_,i)=>deriv(i)));
+  const X=i=>pad+(i/(N-1))*(W-pad-14);
+  const Yh=v=>H/2-10-(v/hMax)*(H/2-30);
+  const Ys=v=>H-pad-(v/sMax)*(H/2-26);
+  let play=false,head=0;
+  const scrub=document.getElementById('npScrub');
+  function draw(){
+    ctx.fillStyle='#0d1322';ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='#1c2740';ctx.beginPath();ctx.moveTo(pad,H/2-6);ctx.lineTo(W-14,H/2-6);ctx.stroke();
+    ctx.fillStyle='#5a6680';ctx.font='11px sans-serif';
+    ctx.fillText('HARD X-ray (HEL1OS) — impulsive',pad+4,18);
+    ctx.fillText('SOFT X-ray (SoLEXS) — gradual',pad+4,H/2+14);
+    // d/dt(soft) overlaid on hard panel
+    ctx.strokeStyle='#a78bfa';ctx.setLineDash([4,3]);ctx.lineWidth=1.5;ctx.beginPath();
+    for(let i=0;i<=head;i++){const x=X(i),y=H/2-10-(deriv(i)/dMax)*(H/2-30);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.stroke();ctx.setLineDash([]);
+    // hard
+    ctx.strokeStyle='#ff6b1a';ctx.lineWidth=2.4;ctx.beginPath();
+    for(let i=0;i<=head;i++){const x=X(i),y=Yh(hard[i]);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.stroke();
+    // soft
+    ctx.strokeStyle='#4aa8ff';ctx.lineWidth=2.4;ctx.beginPath();
+    for(let i=0;i<=head;i++){const x=X(i),y=Ys(soft[i]);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.stroke();
+    // markers: hard peak vs soft peak
+    const hp=hard.indexOf(hMax);
+    if(head>hp){ctx.strokeStyle='#ff6b1a';ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(X(hp),20);ctx.lineTo(X(hp),H-pad);ctx.stroke();ctx.setLineDash([]);}
+    if(head>=N-1){
+      // soft peak ~ end of rise; mark inflection where deriv max
+      const sp=soft.map((_,i)=>deriv(i)).indexOf(dMax);
+      ctx.fillStyle='#ffa726';ctx.font='12px sans-serif';
+      ctx.fillText('← lead time →',(X(hp)+X(N*0.62))/2-30,H/2+34);
+    }
+    // playhead
+    ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(X(head),14);ctx.lineTo(X(head),H-pad);ctx.stroke();
+  }
+  function tick(){if(play){head+=6;if(head>=N-1){head=N-1;play=false;}scrub.value=head;draw();if(play)requestAnimationFrame(tick);}}
+  document.getElementById('npPlay').onclick=()=>{if(head>=N-1)head=0;play=!play;document.getElementById('npPlay').textContent=play?'⏸ Pause':'▶ Play';if(play)tick();};
+  document.getElementById('npReset').onclick=()=>{play=false;head=0;scrub.value=0;document.getElementById('npPlay').textContent='▶ Play';draw();};
+  scrub.oninput=()=>{play=false;document.getElementById('npPlay').textContent='▶ Play';head=+scrub.value;draw();};
+  head=N-1;draw();head=0;scrub.value=0;draw();
+})();
+
+/* ---------- TSS widget ---------- */
+(function(){
+  const cv=document.getElementById('tssWidget');if(!cv)return;const ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height;
+  // synthetic scores: non-events (low) and events (high), overlapping
+  const neg=[],pos=[];
+  for(let i=0;i<200;i++){neg.push(Math.max(0,Math.min(100,38+18*gaussRand())));}
+  for(let i=0;i<40;i++){pos.push(Math.max(0,Math.min(100,66+16*gaussRand())));}
+  function gaussRand(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+  const thR=document.getElementById('tssThresh'),out=document.getElementById('tssReadout');
+  function draw(){
+    const th=+thR.value;
+    ctx.fillStyle='#0d1322';ctx.fillRect(0,0,W,H);
+    const x=v=>40+v/100*(W-60), base=H-50;
+    // axis
+    ctx.strokeStyle='#243150';ctx.beginPath();ctx.moveTo(40,base);ctx.lineTo(W-20,base);ctx.stroke();
+    ctx.fillStyle='#5a6680';ctx.font='11px sans-serif';ctx.fillText('forecast probability →',W-160,base+30);
+    // points
+    neg.forEach((v,i)=>{ctx.fillStyle=v>=th?'#f0506e':'#4a6fa5';ctx.globalAlpha=.7;ctx.beginPath();ctx.arc(x(v),base-12-(i%14)*8,3,0,7);ctx.fill();});
+    pos.forEach((v,i)=>{ctx.fillStyle=v>=th?'#34d399':'#ffa726';ctx.globalAlpha=.9;ctx.beginPath();ctx.arc(x(v),base-12-(i%14)*8,4,0,7);ctx.fill();});
+    ctx.globalAlpha=1;
+    // threshold line
+    ctx.strokeStyle='#fff';ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(x(th),18);ctx.lineTo(x(th),base);ctx.stroke();ctx.setLineDash([]);
+    // metrics
+    const TP=pos.filter(v=>v>=th).length,FN=pos.length-TP;
+    const FP=neg.filter(v=>v>=th).length,TN=neg.length-FP;
+    const TPR=TP/(TP+FN),FPR=FP/(FP+TN),TSS=TPR-FPR;
+    out.textContent=`TPR ${TPR.toFixed(2)} · FPR ${FPR.toFixed(2)} · TSS ${TSS.toFixed(2)}  (TP ${TP} FN ${FN} FP ${FP} TN ${TN})`;
+    out.style.color=TSS>.6?'#34d399':TSS>.3?'#ffa726':'#f0506e';
+    // legend
+    ctx.font='12px sans-serif';
+    ctx.fillStyle='#34d399';ctx.fillText('● flare caught (TP)',W-220,30);
+    ctx.fillStyle='#ffa726';ctx.fillText('● flare missed (FN)',W-220,48);
+    ctx.fillStyle='#f0506e';ctx.fillText('● false alarm (FP)',W-220,66);
+  }
+  thR.oninput=draw;draw();
+})();
+
+/* ---------- generic SVG diagram builder ---------- */
+function node(s,x,y,w,h,title,sub,col){
+  s.appendChild(box(x,y,w,h,{fill:'#16203a',stroke:col||'#243150',sw:2}));
+  s.appendChild(txt(title,x+w/2,y+h/2-(sub?4:-4),{a:'middle',fw:700,fs:14,fill:'#fff'}));
+  if(sub)s.appendChild(txt(sub,x+w/2,y+h/2+14,{a:'middle',fs:11,fill:'#8a96ad'}));
+}
+function arrow(s,x1,y1,x2,y2,col){
+  s.appendChild(el('line',{x1,y1,x2,y2,stroke:col||'#4aa8ff','stroke-width':2,'marker-end':'url(#ah)'}));
+}
+function defsArrow(s){const d=el('defs',{});const m=el('marker',{id:'ah',markerWidth:10,markerHeight:10,refX:8,refY:3,orient:'auto'});m.appendChild(el('path',{d:'M0,0 L8,3 L0,6 Z',fill:'#4aa8ff'}));d.appendChild(m);s.appendChild(d);}
+
+/* ---------- process flow ---------- */
+(function(){
+  const w=860,h=260,s=svg(w,h);defsArrow(s);
+  node(s,20,110,120,52,'Raw FITS','SoLEXS + HEL1OS','#4aa8ff');
+  node(s,170,110,120,52,'Ingest + GTI','mask gaps');
+  node(s,320,110,130,52,'Preprocess','fuse · 1-s grid');
+  node(s,500,30,150,52,'Nowcast','classical detector','#34d399');
+  node(s,500,178,150,52,'Forecast','LightGBM+MiniROCKET','#ff6b1a');
+  node(s,690,110,150,52,'Catalogue + Alerts','→ dashboard','#a78bfa');
+  arrow(s,140,136,170,136);arrow(s,290,136,320,136);
+  arrow(s,450,128,500,70);arrow(s,450,144,500,204);
+  arrow(s,650,56,720,110);arrow(s,650,204,720,162);
+  document.getElementById('flowSvg').appendChild(s);
+})();
+
+/* ---------- use case ---------- */
+(function(){
+  const w=860,h=210,s=svg(w,h);defsArrow(s);
+  function actor(x,y,label){
+    s.appendChild(el('circle',{cx:x,cy:y,r:10,fill:'none',stroke:'#ffa726','stroke-width':2}));
+    s.appendChild(el('line',{x1:x,y1:y+10,x2:x,y2:y+34,stroke:'#ffa726','stroke-width':2}));
+    s.appendChild(el('line',{x1:x-12,y1:y+20,x2:x+12,y2:y+20,stroke:'#ffa726','stroke-width':2}));
+    s.appendChild(el('line',{x1:x,y1:y+34,x2:x-10,y2:y+52,stroke:'#ffa726','stroke-width':2}));
+    s.appendChild(el('line',{x1:x,y1:y+34,x2:x+10,y2:y+52,stroke:'#ffa726','stroke-width':2}));
+    s.appendChild(txt(label,x,y+74,{a:'middle',fs:12,fill:'#cfd8ea'}));
+  }
+  actor(70,44,'Ops operator');
+  actor(70,126,'Researcher');
+  function uc(x,y,t){s.appendChild(el('ellipse',{cx:x,cy:y,rx:96,ry:24,fill:'#16203a',stroke:'#243150','stroke-width':1.5}));s.appendChild(txt(t,x,y+4,{a:'middle',fs:12,fill:'#fff'}));}
+  uc(340,44,'Receive flare alert');
+  uc(340,100,'Browse catalogue');
+  uc(340,156,'Replay historical day');
+  uc(620,100,'Audit "why" (SHAP)');
+  arrow(s,96,54,244,46);
+  arrow(s,96,136,244,102);
+  arrow(s,96,136,244,156);
+  arrow(s,436,100,524,100);
+  document.getElementById('usecaseSvg').appendChild(s);
+})();
+
+/* ---------- architecture ---------- */
+(function(){
+  const w=860,h=420,s=svg(w,h);defsArrow(s);
+  function layer(y,label,col){s.appendChild(box(14,y,832,2,{fill:col,stroke:col,r:0}));s.appendChild(txt(label,20,y-6,{fs:11,fw:700,fill:col}));}
+  node(s,40,30,170,50,'Data Layer','SoLEXS·HEL1OS·GOES','#4aa8ff');
+  node(s,250,30,170,50,'Storage','~5GB external SSD');
+  node(s,40,110,380,50,'Preprocessing','GTI mask · fuse SDD1/2 + soft/hard · 1-s grid','#4aa8ff');
+  node(s,40,190,180,50,'Labeling','GOES cross-ref');
+  node(s,250,190,170,50,'Feature Eng.','Neupert features');
+  node(s,470,30,370,50,'Nowcast Engine (classical)','adaptive baseline + rise-rate → master catalogue','#34d399');
+  node(s,470,120,175,64,'LightGBM','physics features','#ff6b1a');
+  node(s,665,120,175,64,'MiniROCKET','raw sequence','#ff6b1a');
+  node(s,470,200,370,46,'Calibrated Fusion','isotonic → P(flare in N min)','#ff6b1a');
+  node(s,470,266,370,46,'Evaluation','TSS·HSS·ROC·Brier · time-blocked CV','#a78bfa');
+  node(s,40,300,380,60,'Streamlit Dashboard','dual light curves · ratio · alert banner · replay','#a78bfa');
+  arrow(s,300,80,300,110);arrow(s,130,160,130,190);arrow(s,330,160,330,190);
+  arrow(s,420,135,470,150);
+  arrow(s,557,184,557,200);arrow(s,752,184,752,200);
+  arrow(s,655,246,655,266);
+  arrow(s,470,290,420,320);
+  document.getElementById('archSvg').appendChild(s);
+})();
+
+/* ---------- wireframe ---------- */
+(function(){
+  const w=860,h=430,s=svg(w,h);
+  s.appendChild(box(14,14,832,402,{fill:'#0d1322',stroke:'#243150',r:14}));
+  // alert banner
+  s.appendChild(box(30,30,800,40,{fill:'rgba(240,80,110,.14)',stroke:'#f0506e',r:8}));
+  s.appendChild(el('circle',{cx:52,cy:50,r:7,fill:'#f0506e'}));
+  s.appendChild(txt('🚨  ALERT — M-class flare forecast · ~7 min lead · confidence 0.82',70,55,{fs:14,fw:700,fill:'#f0506e'}));
+  // dual light curve
+  s.appendChild(box(30,86,800,150,{fill:'#121a2e',stroke:'#243150'}));
+  s.appendChild(txt('Dual light curve — soft (blue) + hard (orange) + playhead',44,106,{fs:12,fill:'#8a96ad'}));
+  let p='M44,200 ';for(let i=0;i<=80;i++){const x=44+i*9.7;const y=200-60*Math.exp(-((i-52)**2)/120);p+=`L${x},${y} `;}
+  s.appendChild(el('path',{d:p,fill:'none',stroke:'#4aa8ff','stroke-width':2}));
+  let p2='M44,210 ';for(let i=0;i<=80;i++){const x=44+i*9.7;const y=210-70*Math.exp(-((i-44)**2)/30);p2+=`L${x},${y} `;}
+  s.appendChild(el('path',{d:p2,fill:'none',stroke:'#ff6b1a','stroke-width':2}));
+  s.appendChild(el('line',{x1:550,y1:96,x2:550,y2:226,stroke:'#fff','stroke-dasharray':'4 4'}));
+  // ratio panel
+  s.appendChild(box(30,250,490,150,{fill:'#121a2e',stroke:'#243150'}));
+  s.appendChild(txt('Hard / Soft ratio (the precursor) ↑ rising → WATCH',44,270,{fs:12,fill:'#8a96ad'}));
+  let p3='M44,360 ';for(let i=0;i<=46;i++){const x=44+i*10;const y=360-70*(1/(1+Math.exp(-(i-26)/4)));p3+=`L${x},${y} `;}
+  s.appendChild(el('path',{d:p3,fill:'none',stroke:'#a78bfa','stroke-width':2.5}));
+  // gauge
+  s.appendChild(box(540,250,290,150,{fill:'#121a2e',stroke:'#243150'}));
+  s.appendChild(txt('Forecast P(flare ≤ N min)',556,270,{fs:12,fill:'#8a96ad'}));
+  s.appendChild(el('path',{d:'M600,360 A85,85 0 0,1 770,360',fill:'none',stroke:'#243150','stroke-width':14}));
+  s.appendChild(el('path',{d:'M600,360 A85,85 0 0,1 752,318',fill:'none',stroke:'#f0506e','stroke-width':14,'stroke-linecap':'round'}));
+  s.appendChild(txt('0.82',685,352,{a:'middle',fw:800,fs:30,fill:'#f0506e'}));
+  document.getElementById('wireSvg').appendChild(s);
+})();
+
+/* ---------- gantt ---------- */
+(function(){
+  const w=860,h=270,s=svg(w,h);
+  const ph=[['0 Env',0,.5],['1 Data I/O',.5,2],['2 Labeling',2.5,1],['3 Nowcast',3.5,2],['4 Features',5.5,1.5],['5 Forecast',7,3.5],['6 Eval',10.5,1.5],['7 Dashboard',12,2.5],['8 Report',14.5,1]];
+  const total=15.5,x0=130,xw=w-x0-20;
+  const sc=v=>x0+v/total*xw;
+  ph.forEach((p,i)=>{
+    const y=26+i*26;
+    s.appendChild(txt(p[0],x0-10,y+13,{a:'end',fs:12,fill:'#cfd8ea'}));
+    const scored=[3,5,7].includes(p[1]?.[0])||p[0].match(/Nowcast|Forecast|Dashboard/);
+    const col=/Nowcast/.test(p[0])?'#34d399':/Forecast/.test(p[0])?'#ff6b1a':/Dashboard/.test(p[0])?'#a78bfa':'#4a6fa5';
+    s.appendChild(box(sc(p[1]),y,Math.max(8,p[2]/total*xw),18,{fill:col,stroke:col,r:5}));
+  });
+  for(let d=0;d<=15;d+=3){s.appendChild(el('line',{x1:sc(d),y1:18,x2:sc(d),y2:h-18,stroke:'#1c2740'}));s.appendChild(txt('d'+d,sc(d),h-4,{a:'middle',fs:10,fill:'#5a6680'}));}
+  document.getElementById('ganttSvg').appendChild(s);
+})();
+</script>
+</body>
+</html>
