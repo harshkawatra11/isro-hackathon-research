@@ -54,10 +54,9 @@ def panel_fig(w=9.0, h=5.0, dpi=200):
     ax = fig.add_axes([0, 0, 1, 1])
     ax.set_xlim(0, 100); ax.set_ylim(0, 100)
     ax.axis("off")
-    # rounded dark card
-    card = FancyBboxPatch((0.6, 0.6), 98.8, 98.8,
-                          boxstyle="round,pad=0,rounding_size=2.2",
-                          linewidth=1.6, edgecolor=LINE, facecolor=BG, zorder=0)
+    # square dark panel (no border radius)
+    card = Rectangle((0.6, 0.6), 98.8, 98.8,
+                     linewidth=1.6, edgecolor=LINE, facecolor=BG, zorder=0)
     ax.add_patch(card)
     return fig, ax
 
@@ -82,9 +81,8 @@ def title(ax, text, x=4, y=93, color=ACCENT2, size=15):
 
 
 def box(ax, x, y, w, h, text, fc=PANEL, ec=LINE, tc=INK, fs=10, bold=False,
-        round=1.4, align="center", lw=1.5, family=SANS):
-    p = FancyBboxPatch((x, y), w, h, boxstyle=f"round,pad=0,rounding_size={round}",
-                       linewidth=lw, edgecolor=ec, facecolor=fc, zorder=2)
+        round=0, align="center", lw=1.5, family=SANS):
+    p = Rectangle((x, y), w, h, linewidth=lw, edgecolor=ec, facecolor=fc, zorder=2)
     ax.add_patch(p)
     if text:
         ha = "center" if align == "center" else "left"
