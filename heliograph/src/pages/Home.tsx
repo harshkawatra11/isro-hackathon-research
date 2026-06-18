@@ -18,7 +18,7 @@ export default function Home() {
           Bharatiya Antariksh Hackathon 2026 · Problem Statement 15
         </div>
         <h1 className="mt-3 bg-gradient-to-br from-white via-white to-accent2 bg-clip-text text-5xl font-extrabold leading-[1.05] tracking-tight text-transparent sm:text-6xl">
-          HELIOGRAPH
+          SURYASETU
         </h1>
         <p className="mt-4 max-w-2xl text-xl text-muted">
           An interactive textbook and build blueprint for <strong className="text-ink">nowcasting and

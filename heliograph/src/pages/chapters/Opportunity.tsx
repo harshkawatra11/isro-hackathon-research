@@ -13,7 +13,7 @@ export default function Opportunity() {
       <p>
         Most operational flare tools share two limitations: they rely on a <strong>single channel</strong> (usually
         soft X-rays) and on <strong>Earth-orbit</strong> data, and most "predictions" are really detections.
-        HELIOGRAPH differs on three concrete axes:
+        SURYASETU differs on three concrete axes:
       </p>
       <div className="grid gap-4 sm:grid-cols-3">
         <Card icon="🔗" title="Dual-payload fusion" accent="#4aa8ff">

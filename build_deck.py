@@ -27,6 +27,8 @@ NAVY   = RGBColor(0x0b, 0x10, 0x1d)
 CARD   = RGBColor(0xf4, 0xf6, 0xfb)
 CARD2  = RGBColor(0xeb, 0xef, 0xf8)
 BORDER = RGBColor(0xd6, 0xdd, 0xec)
+BODY   = RGBColor(0x12, 0x16, 0x20)   # near-black for readable body text
+LINKB  = RGBColor(0x6d, 0xb4, 0xff)   # link blue on navy banners
 F = "Segoe UI"
 TITLE_TOP = 0.70
 
@@ -104,10 +106,46 @@ def feature_item(slide, x, y, colw, num, color, title, body):
     _set(tf.paragraphs[0].add_run(), title, 12.5, INK, bold=True)
     bb = slide.shapes.add_textbox(Inches(x+0.56), Inches(y+0.30), Inches(colw-0.6), Inches(0.72))
     bf = bb.text_frame; bf.word_wrap = True; bf.auto_size = MSO_AUTO_SIZE.NONE
-    _set(bf.paragraphs[0].add_run(), body, 9.7, MUTED)
+    _set(bf.paragraphs[0].add_run(), body, 9.7, BODY)
     cn = slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT, Inches(x), Inches(y+1.06),
                                     Inches(x+colw-0.2), Inches(y+1.06))
     cn.line.color.rgb = BORDER; cn.line.width = Pt(0.75)
+
+def rich(slide, paras, left, top, width, height, size=9, color=BODY, align=PP_ALIGN.LEFT,
+         gap=3, fill=None, tc=None):
+    """Multi-run paragraphs. Each para is a list of runs; a run is a tuple
+    (text, bold=False, italic=False, size=None, color=None, link=None).
+    If fill is given, draws a filled rectangle (banner); else a plain textbox."""
+    if fill is not None:
+        sh = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(left), Inches(top),
+                                    Inches(width), Inches(height))
+        sh.fill.solid(); sh.fill.fore_color.rgb = fill
+        sh.line.color.rgb = ACCENT; sh.line.width = Pt(1.25)
+        tf = sh.text_frame
+        tf.margin_left = Inches(0.14); tf.margin_right = Inches(0.14)
+        tf.margin_top = Inches(0.05); tf.margin_bottom = Inches(0.05)
+        tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+        if color is BODY: color = tc or WHITE
+    else:
+        sh = slide.shapes.add_textbox(Inches(left), Inches(top), Inches(width), Inches(height))
+        tf = sh.text_frame
+    tf.word_wrap = True; tf.auto_size = MSO_AUTO_SIZE.NONE
+    first = True
+    for para in paras:
+        para_p = tf.paragraphs[0] if first else tf.add_paragraph(); first = False
+        para_p.alignment = align; para_p.space_after = Pt(gap)
+        for run in para:
+            text = run[0]
+            bold = run[1] if len(run) > 1 else False
+            ital = run[2] if len(run) > 2 else False
+            rs   = run[3] if len(run) > 3 and run[3] else size
+            rc   = run[4] if len(run) > 4 and run[4] else color
+            r = para_p.add_run(); _set(r, text, rs, rc, bold, ital)
+            if len(run) > 5 and run[5]:
+                r.hyperlink.address = run[5]
+            if len(run) > 6 and run[6]:
+                r.font.underline = True
+    return sh
 
 # =================================================== SLIDE 1 - Title
 for sh in S[0].shapes:
@@ -138,24 +176,31 @@ for sh in S[1].shapes:
                 par = tf.add_paragraph()
                 _set(par.add_run(), label, 11, INK, bold=True)
                 _set(par.add_run(), val, 11, INK)
-caption(S[1], "A two-person, two-institute team: full-stack and AI/ML engineering applied to ISRO's own solar mission.",
-        0.5, 5.15, 9.0, size=10.5, color=MUTED, align=PP_ALIGN.CENTER)
+rich(S[1], [[
+    ("A two-person, two-institute team: ", False, False, 10.5, BODY),
+    ("full-stack and AI/ML engineering", True, False, 10.5, BODY),
+    (" applied to ISRO's own solar mission.", False, True, 10.5, BODY),
+]], 0.5, 5.15, 9.0, 0.4, align=PP_ALIGN.CENTER)
 
 # =================================================== SLIDE 3 - Opportunity & USP
 title_bar(S[2], "Opportunity and USP: why SuryaSetu wins")
-lines(S[2], [
-    ('Most flare tools use a single channel from Earth orbit, and most "forecasts" are really just detections.', 11, INK, False, False, False),
-    ("We are different on three axes:", 11, INK, True, False, False),
-    ("Dual-payload fusion: SoLEXS soft + HEL1OS hard, from the L1 vantage.", 10, ACCENT, False, False, True),
-    ("Physics-grounded lead time: the Neupert effect, a real mechanism.", 10, SOFTB, False, False, True),
-    ("Honest evaluation: TSS-driven, calibrated, time-blocked.", 10, GREEN, False, False, True),
-], 0.34, 1.12, 9.3, height=1.2)
-img(S[2], "spectrum.png",  0.30, 2.38, 4.55, 2.45, align="center")
-img(S[2], "neupert.png",   5.05, 2.38, 4.65, 2.45, align="center")
-caption(S[2], "Two payloads = two physical windows (why fusion beats one channel)", 0.30, 4.84, 4.55, size=8.5)
-caption(S[2], "Hard X-ray leads soft by 5 to 15 min = our forecast lead time", 5.05, 4.84, 4.65, size=8.5)
+rich(S[2], [
+    [('Most flare tools use a single channel from Earth orbit, and most "forecasts" are really just detections after the flare has already begun. ', False, False, 9.5),
+     ("SuryaSetu is built differently on three axes:", True, False, 9.5)],
+    [("1. Dual-payload fusion.", True, False, 9.5, ACCENT)],
+    [("SoLEXS measures ", ), ("soft X-rays", True), (" (the heat a flare gives off) and HEL1OS measures ", ), ("hard X-rays", True), (" (the instant energy is released).", )],
+    [("We merge both onto a ", ), ("single timeline", True), (" from the L1 vantage, so the model reads the ", ), ("full physics", True), (" of a flare instead of half of it - ", ), ("the biggest reason our forecasts beat single-channel tools.", False, True)],
+    [("2. Physics-grounded lead time.", True, False, 9.5, SOFTB)],
+    [("Hard X-rays surge several minutes before the damaging ", ), ("soft-X-ray peak", True), (", a real published relationship called the ", ), ("Neupert effect", True), (".", )],
+    [("We convert that natural head-start into the actual ", ), ("warning time", True), (" an operator needs, so the forecast rests on solar physics, ", ), ("not a curve fit that only matches past data.", False, True)],
+    [("3. Honest, operational evaluation.", True, False, 9.5, GREEN)],
+    [('Flares are rare, so a model that always says "no flare" looks ', ), ("99% accurate", True), (" and is useless.", )],
+    [("We score with the ", ), ("True Skill Statistic", True), (", calibrate every probability, and validate only on ", ), ("future time blocks", True), (" - the standard ISRO and the space-weather community actually trust.", )],
+], 0.34, 1.08, 4.58, height=4.05, size=9, color=BODY, gap=2)
+img(S[2], "spectrum.png",  5.02, 1.18, 4.68, 1.85, align="center")
+img(S[2], "neupert.png",   5.02, 3.10, 4.68, 1.95, align="center")
 banner(S[2], "USP: the only dual-payload, L1-vantage system that turns the Neupert effect into calibrated, TSS-validated lead-time warnings, reproducible at zero cost on a laptop.",
-       0.34, 5.16, 9.32, 0.34, fill=NAVY, tc=WHITE, size=9.5)
+       0.34, 5.18, 9.32, 0.34, fill=NAVY, tc=WHITE, size=9.5)
 
 # =================================================== SLIDE 4 - Features (native light)
 title_bar(S[3], "Features offered by the solution")
@@ -167,48 +212,85 @@ feats = [
     ("05", PURPLE, "Explainable alerts (SHAP)", "Every forecast states which precursor fired it, so scientists can trust and audit it."),
     ("06", RED,    "Offline and reproducible", "No cloud, no cost, no proprietary software: end-to-end on one laptop from public data."),
 ]
-cols_x = [0.45, 5.15]; colw = 4.45; rows_y = [1.30, 2.52, 3.74]
+cols_x = [0.45, 5.15]; colw = 4.45; rows_y = [1.24, 2.42, 3.60]
 for i, (num, col, ttl, body) in enumerate(feats):
     feature_item(S[3], cols_x[i % 2], rows_y[i // 2], colw, num, col, ttl, body)
-caption(S[3], "Six capabilities, each mapped to an ISRO evaluation criterion: a master catalogue, calibrated lead-time forecasts, a live alerting dashboard, full dynamic range, explainable alerts, and zero-cost reproducibility.",
-        0.40, 5.02, 9.2, size=9.5, color=INK, align=PP_ALIGN.CENTER)
+rich(S[3], [
+    [("How it works in practice: ", True, False, 9, AMBER),
+     ("the system reads both Aditya-L1 X-ray channels continuously, ", ),
+     ("automatically logs every flare", True), (" it detects into the catalogue, and ", ),
+     ("forecasts the next flare's strength and timing", True), (" with a ", ),
+     ("calibrated confidence", True), (".", )],
+    [("The operator watches one dashboard; when risk crosses a tuned threshold the ", ),
+     ("banner turns red", True, False, 9, AMBER), (" with the ", ),
+     ("minutes of lead time", True), (" remaining, and ", ),
+     ("SHAP", True), (" names the exact precursor that triggered it.", )],
+], 0.40, 4.78, 9.2, 0.70, fill=NAVY, color=WHITE, size=9, align=PP_ALIGN.CENTER, gap=2)
 
 # =================================================== SLIDE 5 - Process flow / use-case
 title_bar(S[4], "Process flow and use-case")
-img(S[4], "process_flow.png", 0.28, 1.28, 6.25, 3.55, align="center")
-img(S[4], "usecase.png",      6.62, 1.28, 3.10, 3.55, align="center")
-caption(S[4], "Raw FITS to ingest and GTI, fuse to a 1-second grid, then two parallel engines (classical nowcast and ML forecast), then catalogue and calibrated alerts, then the operator dashboard.",
-        0.30, 4.92, 6.25, size=8.6, color=INK)
-caption(S[4], "Two actors: an ops operator who acts on alerts, and a researcher who audits the catalogue.",
-        6.62, 4.92, 3.10, size=8.6, color=INK)
+img(S[4], "process_flow.png", 0.28, 1.22, 6.25, 3.40, align="center")
+img(S[4], "usecase.png",      6.62, 1.22, 3.10, 3.40, align="center")
+rich(S[4], [
+    [("In plain terms: ", True, False, 8.4, AMBER), ("raw satellite files are ", ), ("cleaned", True), (" (bad seconds removed) and merged into one ", ), ("1-second timeline", True), (".", )],
+    [("That stream splits into ", ), ("two engines", True), (" running side by side: a ", ), ("classical detector", True), (" that logs flares the moment they start, and an ", ), ("ML forecaster", True), (" that predicts the next one.", )],
+    [("Both feed the ", ), ("catalogue, the alerts, and the live dashboard", True), (".", )],
+], 0.30, 4.64, 6.25, 0.95, size=8.4, color=BODY, gap=2)
+rich(S[4], [
+    [("Two users.", True)],
+    [("An ", ), ("operations engineer", True), (" receives an alert and safe-modes satellites or holds GPS-critical work;", )],
+    [("a ", ), ("researcher", True), (" browses the catalogue, replays any past day, and audits why each alert fired.", )],
+], 6.62, 4.64, 3.10, 0.95, size=8.4, color=BODY, gap=2)
 
 # =================================================== SLIDE 6 - Wireframe / dashboard
 title_bar(S[5], "Wireframe: the operator dashboard")
-img(S[5], "dashboard.png", 0.28, 1.18, 6.25, 3.85, align="left")
-img(S[5], "real_lightcurve.png", 6.60, 1.20, 3.14, 1.12, align="center")
-caption(S[5], "Renders real Aditya-L1 data (2026-06-15)", 6.60, 2.30, 3.14, size=8, color=MUTED)
-states = [("QUIET", GREEN, "no flare activity"),
-          ("WATCH", AMBER, "precursor (hard/soft ratio) rising"),
-          ("ALERT", RED,   "flare forecast, lead time and confidence shown")]
-y = 2.62
-for label, col, desc in states:
+img(S[5], "dashboard.png", 0.28, 1.16, 6.25, 3.60, align="left")
+img(S[5], "real_lightcurve.png", 6.60, 1.16, 3.14, 1.05, align="center")
+rich(S[5], [[("Renders ", False, True, 8, BODY), ("real Aditya-L1 data", True, False, 8, BODY), (" (2026-06-15)", False, True, 8, BODY)]],
+     6.60, 2.16, 3.14, 0.3, align=PP_ALIGN.CENTER)
+states = [
+    ("QUIET", GREEN, [
+        [("The Sun is ", ), ("calm", True), (" and ", ), ("no action is needed", True), (".", )],
+        [("The system keeps logging the ", ), ("quiet-Sun baseline", True), (" it measures against.", )],
+    ]),
+    ("WATCH", AMBER, [
+        [("The ", ), ("hard/soft ratio is climbing", True), (", the physics precursor that often comes before a flare.", )],
+        [("The operator is ", ), ("put on notice", True), (" before anything is certain.", )],
+    ]),
+    ("ALERT", RED, [
+        [("A flare is forecast.", True)],
+        [("The banner shows the predicted ", ), ("class", True), (", the ", ), ("minutes of lead time", True), (", and a ", ), ("calibrated confidence", True), (" so the operator can act.", )],
+    ]),
+]
+y = 2.48
+for label, col, descp in states:
     dotsh = S[5].shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(6.62), Inches(y+0.03), Inches(0.14), Inches(0.14))
     dotsh.fill.solid(); dotsh.fill.fore_color.rgb = col; dotsh.line.fill.background(); dotsh.shadow.inherit = False
-    tb = S[5].shapes.add_textbox(Inches(6.82), Inches(y-0.04), Inches(2.95), Inches(0.7))
-    tf = tb.text_frame; tf.word_wrap = True
-    _set(tf.paragraphs[0].add_run(), label, 11, col, bold=True)
-    par = tf.add_paragraph(); _set(par.add_run(), desc, 8.6, INK)
-    y += 0.80
-caption(S[5], "Alert banner spans the top; dual light curve and playhead centre; hard/soft ratio precursor and a calibrated probability gauge right; the flare catalogue below. The banner flips before the soft peak.",
-        0.30, 5.12, 6.25, size=8.4, color=INK, align=PP_ALIGN.LEFT)
+    tb = S[5].shapes.add_textbox(Inches(6.82), Inches(y-0.04), Inches(2.92), Inches(0.86))
+    tf = tb.text_frame; tf.word_wrap = True; tf.auto_size = MSO_AUTO_SIZE.NONE
+    _set(tf.paragraphs[0].add_run(), label, 10.5, col, bold=True)
+    for para in descp:
+        pp = tf.add_paragraph(); pp.space_after = Pt(1)
+        for run in para:
+            text = run[0]; bold = run[1] if len(run) > 1 else False
+            _set(pp.add_run(), text, 8, BODY, bold)
+    y += 0.92
+rich(S[5], [
+    [("One screen for the operator: ", True), ("the live soft and hard light curves with a ", ), ("moving playhead", True), (", the rising ", ), ("hard/soft ratio", True), (" that acts as the early warning, a ", ), ("probability gauge", True), (" for the next N minutes, and the running ", ), ("flare catalogue", True), (".", )],
+    [("The banner ", ), ("flips red", True), (" before the ", ), ("soft-X-ray peak", True), (", and ", ), ("that gap is the warning time we deliver.", False, True)],
+], 0.30, 4.80, 6.25, 0.70, size=8.2, color=BODY, gap=2)
 
 # =================================================== SLIDE 7 - Architecture
 title_bar(S[6], "Architecture of the proposed solution")
-img(S[6], "architecture.png", 0.28, 1.12, 6.05, 3.45, align="left")
-img(S[6], "tss.png",                6.38, 1.12, 3.34, 2.05, align="center")
-img(S[6], "feature_importance.png", 6.38, 3.28, 3.34, 1.78, align="center")
-caption(S[6], "Classical where classical wins, ML where ML wins. Evaluated on TSS, not accuracy, and every alert is explainable.",
-        0.28, 4.74, 6.05, size=8.8, color=INK, align=PP_ALIGN.LEFT)
+img(S[6], "architecture.png", 0.28, 1.10, 6.05, 3.18, align="left")
+img(S[6], "tss.png",                6.38, 1.10, 3.34, 2.02, align="center")
+img(S[6], "feature_importance.png", 6.38, 3.22, 3.34, 1.78, align="center")
+rich(S[6], [
+    [("How it works: ", True, False, 8, AMBER), ("the cleaned soft and hard light curves feed ", ), ("two paths at once", True), (".", )],
+    [("A ", ), ("classical signal-processing detector", True), (" (adaptive baseline plus rise-rate) handles nowcasting, ", ), ("interpretable and training-free", False, True), (".", )],
+    [("In parallel, a ", ), ("LightGBM", True), (" gradient-boosted model on Neupert-physics features and a ", ), ("MiniROCKET", True), (" convolutional time-series model on raw windows are fused and ", ), ("isotonic-calibrated", True), (" into one probability, ", ), ("P(flare within N minutes)", True), (".", )],
+    [("Every result is validated with ", ), ("time-blocked cross-validation", True), (" on the ", ), ("True Skill Statistic", True), (", and ", ), ("SHAP", True), (" attributes each alert to the precursor that drove it.", )],
+], 0.28, 4.34, 6.05, 1.15, size=8, color=BODY, gap=1)
 
 # =================================================== SLIDE 8 - Technologies (native light table)
 title_bar(S[7], "Technologies used in the solution")
@@ -225,8 +307,8 @@ stack = [
     ("Environment",       "Python 3.11 (uv)",    "prebuilt wheels, avoids the 3.14 astropy build break","PSF",   MUTED),
 ]
 nr = len(stack) + 1
-tw, th = 7.55, 3.95
-tbl = S[7].shapes.add_table(nr, 4, Inches(0.34), Inches(1.12), Inches(tw), Inches(th)).table
+tw, th = 7.55, 3.62
+tbl = S[7].shapes.add_table(nr, 4, Inches(0.34), Inches(1.08), Inches(tw), Inches(th)).table
 tbl.first_row = False; tbl.horz_banding = False
 widths = [1.4, 1.62, 3.72, 0.81]
 for ci, wv in enumerate(widths): tbl.columns[ci].width = Inches(wv)
@@ -240,7 +322,7 @@ for ri, (layer, tool, why, lic, col) in enumerate(stack, start=1):
     rowfill = CARD if ri % 2 else CARD2
     for ci, (val, color, bold, fam) in enumerate([
             (layer, col, True, F), (tool, INK, True, "Consolas"),
-            (why, MUTED, False, F), (lic, INK, False, "Consolas")]):
+            (why, BODY, False, F), (lic, INK, False, "Consolas")]):
         c = tbl.cell(ri, ci); c.fill.solid(); c.fill.fore_color.rgb = rowfill
         c.margin_top = Inches(0.015); c.margin_bottom = Inches(0.015); c.margin_left = Inches(0.08)
         c.vertical_anchor = MSO_ANCHOR.MIDDLE
@@ -249,19 +331,26 @@ for ri, (layer, tool, why, lic, col) in enumerate(stack, start=1):
 lines(S[7], [
     ("Every layer, justified.", 11, ACCENT, True, False, False),
     ("", 5, INK, False, False, False),
-    ("CPU-first: runs on an i5 / RTX 3050 / 16 GB laptop. GPU optional, never required.", 9.5, INK, False, False, False),
-    ("", 5, INK, False, False, False),
-    ("All open-source (BSD / MIT / Apache / PSF).", 9.5, GREEN, True, False, False),
-    ("", 5, INK, False, False, False),
-    ("Live build:", 9.5, INK, True, False, False),
-    ("isro-hack-research.vercel.app", 9.5, SOFTB, True, False, False),
-], 8.05, 1.25, 1.75, height=3.7)
+    ("The prototype runs on a modest laptop (i5 / RTX 3050 / 16 GB) - proof that the method, not the hardware, does the work.", 9, INK, False, False, False),
+    ("", 4, INK, False, False, False),
+    ("The same open-source stack scales straight onto ISRO's far larger infrastructure for full-mission throughput.", 9, INK, False, False, False),
+    ("", 4, INK, False, False, False),
+    ("In ISRO's own tradition: the best results from the least resources.", 9, GREEN, True, True, False),
+], 8.05, 1.20, 1.78, height=3.55)
+VURL = "https://isro-hack-research.vercel.app"
+rich(S[7], [
+    [("Proof of work and open research: ", True, False, 9, WHITE),
+     ("isro-hack-research.vercel.app", True, False, 9, LINKB, VURL, True),
+     ("  [ Click to Know ]", True, False, 9, LINKB, VURL, True),
+     (" - a complete, first-principles companion to the science, data, and methodology behind SuryaSetu,", False, False, 8.7, WHITE)],
+    [("written and published so any engineer can understand and rebuild the system.", False, True, 8.7, WHITE)],
+], 0.34, 4.82, 9.32, 0.62, fill=NAVY, color=WHITE, size=9, align=PP_ALIGN.CENTER, gap=1)
 
 # =================================================== SLIDE 9 - Cost
 title_bar(S[8], "Estimated implementation cost")
 lines(S[8], [
-    ("Prototype (our submission): total cost zero. The only real input is engineering time.", 11.5, ACCENT, True, False, False),
-], 0.34, 1.16, 9.3, height=0.4)
+    ("Prototype (our submission): effectively zero rupees. It needs only an internet connection, a capable GPU (enough VRAM) and a good CPU, all of which we already own.", 10.5, ACCENT, True, False, False),
+], 0.34, 1.12, 9.3, height=0.55)
 rows = [
     ("Item","Cost","Note"),
     ("Aditya-L1 SoLEXS + HEL1OS data","Rs 0","free, ISSDC PRADAN (registered)"),
@@ -284,9 +373,11 @@ for ri,row in enumerate(rows):
         c.vertical_anchor = MSO_ANCHOR.MIDDLE
         par = c.text_frame.paragraphs[0]
         _set(par.add_run(), val, 9.5, WHITE if head else (ACCENT if tot else INK), bold=head or tot)
-img(S[8], "data_funnel.png", 6.05, 1.55, 3.65, 2.9, align="center")
-banner(S[8], "Production / ISRO-scale deployment adds real cost: operational GPU or cloud compute (about Rs 1.5 to 2.5 lakh per year), 24x7 ingest and redundant full-mission storage, monitoring and MLOps, and engineering staff. Scoped on selection.",
-       0.34, 4.74, 9.32, 0.7, fill=NAVY, tc=WHITE, size=9)
+img(S[8], "data_funnel.png", 6.05, 1.62, 3.65, 2.78, align="center")
+rich(S[8], [
+    [("Cost at ISRO scale", True, False, 9.5, AMBER), (" (operational, scoped on selection):", False, True, 9, WHITE)],
+    [("compute at scale", True), ("  (GPU cluster or cloud)   |   ", ), ("AI tooling and API keys", True), ("   |   ", ), ("redundant full-mission storage", True), ("   |   ", ), ("internet and data egress", True), ("   |   ", ), ("engineering and MLOps staff", True), (".", )],
+], 0.34, 4.70, 9.32, 0.72, fill=NAVY, color=WHITE, size=9, align=PP_ALIGN.CENTER, gap=2)
 
 # =================================================== SLIDE 10 - Closing
 # left as the ISRO template's own closing slide (no added banner or references line)

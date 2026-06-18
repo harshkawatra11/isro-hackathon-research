@@ -47,7 +47,7 @@ plt.rcParams.update({
 })
 
 
-def panel_fig(w=9.0, h=5.0, dpi=200):
+def panel_fig(w=9.0, h=5.0, dpi=300):
     """A dark self-contained panel figure on transparent ground (sits on white slide)."""
     fig = plt.figure(figsize=(w, h), dpi=dpi)
     fig.patch.set_alpha(0)
@@ -61,7 +61,7 @@ def panel_fig(w=9.0, h=5.0, dpi=200):
     return fig, ax
 
 
-def chart_fig(w=6.0, h=4.2, dpi=200):
+def chart_fig(w=6.0, h=4.2, dpi=300):
     """A dark panel with a real matplotlib data axis inside."""
     fig = plt.figure(figsize=(w, h), dpi=dpi)
     fig.patch.set_facecolor(BG)

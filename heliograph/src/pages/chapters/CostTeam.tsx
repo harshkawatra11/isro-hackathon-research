@@ -63,7 +63,7 @@ export default function CostTeam() {
 
       <h3 className="prose-h3">Team &amp; cover (editable)</h3>
       <div className="rounded-2xl border border-line bg-panel p-5">
-        <Field label="Team Name" defaultValue="HELIOGRAPH" />
+        <Field label="Team Name" defaultValue="SURYASETU" />
         <Field label="Problem Statement" defaultValue="PS-15 · Forecasting / Nowcasting of Solar Flares (Aditya-L1)" />
         <Field label="Team Leader" defaultValue="Harsh Kawatra" />
         <Field label="Leader College" defaultValue="Delhi Technological University (DTU)" />
@@ -86,7 +86,7 @@ export default function CostTeam() {
       </Callout>
 
       <p className="mt-6 border-t border-line pt-5 text-[13px] text-muted">
-        HELIOGRAPH · Built for Bharatiya Antariksh Hackathon 2026 · Problem Statement 15. Real SoLEXS sample:
+        SURYASETU · Built for Bharatiya Antariksh Hackathon 2026 · Problem Statement 15. Real SoLEXS sample:
         2026-06-15 SDD2, parsed from the downloaded day-file. Instrument figures verified against the published
         SoLEXS and HEL1OS papers (<em>Solar Physics</em>, 2025) and the Neupert-effect literature. The animated
         Neupert and reconnection figures are physically-faithful schematics, labelled as such.

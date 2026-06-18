@@ -32,7 +32,7 @@ function Sidebar({ onNav }: { onNav?: () => void }) {
         </span>
         <div>
           <div className="text-[17px] font-extrabold leading-none">
-            <span className="text-accent">HELIO</span>GRAPH
+            <span className="text-accent">SURYA</span>SETU
           </div>
           <div className="text-[10.5px] text-muted">ISRO BAH-2026 · PS-15</div>
         </div>
@@ -103,7 +103,7 @@ export default function App() {
 
       <div className="sticky top-0 z-40 flex items-center justify-between border-b border-line bg-bg/80 px-4 py-2.5 backdrop-blur lg:hidden">
         <Link to="/" className="font-extrabold">
-          <span className="text-accent">HELIO</span>GRAPH
+          <span className="text-accent">SURYA</span>SETU
         </Link>
         <button onClick={() => setOpen((v) => !v)} className="text-muted" aria-label="menu">
           {open ? <X /> : <Menu />}

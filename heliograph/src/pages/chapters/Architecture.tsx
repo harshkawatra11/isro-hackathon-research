@@ -11,7 +11,7 @@ export default function Architecture() {
       </p>
 
       <Figure
-        title="HELIOGRAPH system architecture — interactive"
+        title="SURYASETU system architecture — interactive"
         caption="Drag nodes to explore. Two engines run in parallel off the same fused, GTI-clean signal: a classical nowcaster (green) that produces the master catalogue, and an ML forecaster (orange → purple) that produces calibrated lead-time predictions. Both feed the alert dashboard."
       >
         <SystemArchitecture />
