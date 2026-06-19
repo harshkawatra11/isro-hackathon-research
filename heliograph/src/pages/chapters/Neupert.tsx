@@ -70,6 +70,18 @@ export default function Neupert() {
         </div>
       </div>
 
+      <Callout kind="warn" title="Reconciling with ISRO's 15-30 min forecast target">
+        The PS-15 briefing frames the forecasting goal as roughly <strong>15-30 minutes</strong> of lead time.
+        We are deliberate about what each signal earns: <strong>X-ray Neupert physics caps reliable lead time at
+        about 5-15 minutes</strong> — that is the genuine head start between the hard-X-ray impulse and the
+        damaging soft-X-ray peak, and it is the number we report rather than inflate. Pushing the horizon out
+        toward 15-30 minutes means forecasting <em>before</em> the X-ray rise at all, which physically requires
+        <strong> magnetic-field / magnetogram precursors</strong> (active-region complexity, flux emergence) — a
+        path the briefing explicitly permits. We carry it as a <strong>roadmap extension</strong>: the X-ray
+        system ships the honest 5-15 min warning today, and the magnetogram channel is the principled way to
+        reach the longer horizon without over-claiming.
+      </Callout>
+
       <Callout kind="deep" title="From physics to features">
         The Neupert effect tells us precisely which quantities our forecasting model should compute: not just the
         raw soft and hard counts, but the <strong>hard/soft ratio</strong>, the <strong>rate of change</strong> of

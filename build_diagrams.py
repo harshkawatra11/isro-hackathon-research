@@ -35,7 +35,7 @@ def xray_spectrum():
 
 # ============================================================ 2 - NEUPERT LEAD-TIME
 def neupert():
-    fig, ax = chart_fig(6.6, 4.3)
+    fig, ax = chart_fig(6.6, 4.8)
     t = np.linspace(0, 30, 600)
     hard = np.exp(-((t-9)**2)/8.0)
     soft = np.cumsum(hard); soft = soft/soft.max()
@@ -59,8 +59,11 @@ def neupert():
     ax.set_title("The Neupert effect = our forecast lead time", color=ACCENT2,
                  fontsize=14, fontweight="bold", pad=22, loc="left")
     ax.legend(loc="center right", fontsize=9.5, frameon=False, labelcolor=INK)
-    ax.text(0.2, -0.32, "Illustrative (synthetic): the physical relationship, not measured data.",
+    ax.text(0.2, -0.28, "Illustrative (synthetic): the physical relationship, not measured data.",
             transform=ax.transAxes, color=MUTED, fontsize=8.5, style="italic")
+    ax.text(0.2, -0.42, "X-ray Neupert physics caps lead time at ~5 to 15 min;\n15 to 30 min horizons need magnetogram precursors (roadmap).",
+            transform=ax.transAxes, color=ACCENT2, fontsize=8.5, fontweight="bold", linespacing=1.3,
+            va="top")
     fig.tight_layout()
     fig.savefig(out("neupert.png"), facecolor=BG, bbox_inches="tight", pad_inches=0.12)
     print("wrote neupert.png")
@@ -252,6 +255,8 @@ def dashboard():
         for x,v in zip(xs, r):
             ax.text(x, yy, v, color=MUTED, fontsize=8.6, family=MONO)
         ax.add_line(Line2D([6,94],[yy-2.6,yy-2.6], color=LINE, lw=0.6))
+    ax.text(50, 2.0, "Lead time = X-ray Neupert ceiling (~5 to 15 min); 15 to 30 min horizons need magnetogram precursors (roadmap).",
+            ha="center", va="center", color=MUTED, fontsize=7.0, style="italic")
     save(fig, out("dashboard.png"))
 
 # ============================================================ 9 - ARCHITECTURE
