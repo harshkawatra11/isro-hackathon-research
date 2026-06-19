@@ -166,9 +166,10 @@ for sh in S[1].shapes:
         cells = {
             (0,0): ("Team Leader", "Harsh Kawatra", "Delhi Technological University (DTU)"),
             (0,1): ("Team Member-1", "Gursimran Kaur", "Guru Gobind Singh Indraprastha University (GGSIPU)"),
-            (1,0): ("Team Member-2", "-", "-"),
-            (1,1): ("Team Member-3", "-", "-"),
         }
+        # Two-person team: leave the Member-2/3 quadrants blank rather than showing empty "-" stubs.
+        for (ri,ci) in [(1,0),(1,1)]:
+            tbl.cell(ri,ci).text_frame.clear()
         for (ri,ci),(role,name,college) in cells.items():
             tf = tbl.cell(ri,ci).text_frame; tf.clear(); tf.word_wrap = True
             _set(tf.paragraphs[0].add_run(), role, 13, ACCENT, bold=True)
@@ -185,18 +186,19 @@ rich(S[1], [[
 # =================================================== SLIDE 3 - Opportunity & USP
 title_bar(S[2], "Opportunity and USP: why SuryaSetu wins")
 rich(S[2], [
-    [('Most flare tools use a single channel from Earth orbit, and most "forecasts" are really just detections after the flare has already begun. ', False, False, 9.5),
+    [('Most flare tools use a single channel from Earth orbit, and most blur detection and forecasting into one. ', False, False, 9.5),
      ("SuryaSetu is built differently on three axes:", True, False, 9.5)],
     [("1. Dual-payload fusion.", True, False, 9.5, ACCENT)],
     [("SoLEXS measures ", ), ("soft X-rays", True), (" (the heat a flare gives off) and HEL1OS measures ", ), ("hard X-rays", True), (" (the instant energy is released).", )],
-    [("We merge both onto a ", ), ("single timeline", True), (" from the L1 vantage, so the model reads the ", ), ("full physics", True), (" of a flare instead of half of it - ", ), ("the biggest reason our forecasts beat single-channel tools.", False, True)],
+    [("We merge both onto a ", ), ("single timeline", True), (" from the L1 vantage, so the model reads the ", ), ("full physics", True), (" of a flare instead of half of it - ", ), ("the reason we expect to outperform single-channel tools, which we prove with a single-vs-dual ablation.", False, True)],
     [("2. Physics-grounded lead time.", True, False, 9.5, SOFTB)],
     [("Hard X-rays surge several minutes before the damaging ", ), ("soft-X-ray peak", True), (", a real published relationship called the ", ), ("Neupert effect", True), (".", )],
     [("We convert that natural head-start into the actual ", ), ("warning time", True), (" an operator needs, so the forecast rests on solar physics, ", ), ("not a curve fit that only matches past data.", False, True)],
     [("3. Honest, operational evaluation.", True, False, 9.5, GREEN)],
     [('Flares are rare, so a model that always says "no flare" looks ', ), ("99% accurate", True), (" and is useless.", )],
     [("We score with the ", ), ("True Skill Statistic", True), (", calibrate every probability, and validate only on ", ), ("future time blocks", True), (" - the standard ISRO and the space-weather community actually trust.", )],
-], 0.34, 1.08, 4.58, height=4.05, size=9, color=BODY, gap=2)
+    [("We forecast the damaging peak", True), (" - defensible physics - and stay honest that ", ), ("true pre-onset prediction is the harder frontier", False, True), (".", )],
+], 0.34, 1.08, 4.58, height=4.05, size=8.6, color=BODY, gap=1)
 img(S[2], "spectrum.png",  5.02, 1.18, 4.68, 1.85, align="center")
 img(S[2], "neupert.png",   5.02, 3.10, 4.68, 1.95, align="center")
 banner(S[2], "USP: the only dual-payload, L1-vantage system that turns the Neupert effect into calibrated, TSS-validated lead-time warnings, reproducible at zero cost on a laptop.",
@@ -291,6 +293,13 @@ rich(S[6], [
     [("In parallel, a ", ), ("LightGBM", True), (" gradient-boosted model on Neupert-physics features and a ", ), ("MiniROCKET", True), (" convolutional time-series model on raw windows are fused and ", ), ("isotonic-calibrated", True), (" into one probability, ", ), ("P(flare within N minutes)", True), (".", )],
     [("Every result is validated with ", ), ("time-blocked cross-validation", True), (" on the ", ), ("True Skill Statistic", True), (", and ", ), ("SHAP", True), (" attributes each alert to the precursor that drove it.", )],
 ], 0.28, 4.34, 6.05, 1.15, size=8, color=BODY, gap=1)
+# Honest-labelling: both right-hand charts are expected output, not measured results.
+_cap = S[6].shapes.add_textbox(Inches(6.38), Inches(5.04), Inches(3.34), Inches(0.22))
+_cap.text_frame.word_wrap = True
+_set(_cap.text_frame.paragraphs[0].add_run(),
+     "Both right-hand charts are illustrative - expected output, not measured results.",
+     7, MUTED, bold=False, italic=True)
+_cap.text_frame.paragraphs[0].alignment = PP_ALIGN.CENTER
 
 # =================================================== SLIDE 8 - Technologies (native light table)
 title_bar(S[7], "Technologies used in the solution")
@@ -304,7 +313,7 @@ stack = [
     ("Explainability",    "SHAP",                "per-alert precursor attribution (the why)",          "MIT",    PURPLE),
     ("Figures",           "matplotlib, plotly",  "light curves, reliability, lead-time plots",         "BSD",    GREEN),
     ("Interface",         "Streamlit",           "fastest path to dual curves, alerts and replay",     "Apache", GREEN),
-    ("Environment",       "Python 3.11 (uv)",    "prebuilt wheels, avoids the 3.14 astropy build break","PSF",   MUTED),
+    ("Environment",       "Python 3.11 (uv)",    "stable, prebuilt scientific wheels",                  "PSF",   MUTED),
 ]
 nr = len(stack) + 1
 tw, th = 7.55, 3.62
@@ -349,7 +358,7 @@ rich(S[7], [
 # =================================================== SLIDE 9 - Cost
 title_bar(S[8], "Estimated implementation cost")
 lines(S[8], [
-    ("Prototype (our submission): effectively zero rupees. It needs only an internet connection, a capable GPU (enough VRAM) and a good CPU, all of which we already own.", 10.5, ACCENT, True, False, False),
+    ("Prototype (our submission): effectively zero rupees. It needs only an internet connection and a modern laptop CPU (GPU optional), all of which we already own.", 10.5, ACCENT, True, False, False),
 ], 0.34, 1.12, 9.3, height=0.55)
 rows = [
     ("Item","Cost","Note"),
@@ -376,7 +385,7 @@ for ri,row in enumerate(rows):
 img(S[8], "data_funnel.png", 6.05, 1.62, 3.65, 2.78, align="center")
 rich(S[8], [
     [("Cost at ISRO scale", True, False, 9.5, AMBER), (" (operational, scoped on selection):", False, True, 9, WHITE)],
-    [("compute at scale", True), ("  (GPU cluster or cloud)   |   ", ), ("AI tooling and API keys", True), ("   |   ", ), ("redundant full-mission storage", True), ("   |   ", ), ("internet and data egress", True), ("   |   ", ), ("engineering and MLOps staff", True), (".", )],
+    [("compute at scale", True), ("  (GPU cluster or cloud)   |   ", ), ("redundant full-mission storage", True), ("   |   ", ), ("internet and data egress", True), ("   |   ", ), ("engineering and MLOps staff", True), (".", )],
 ], 0.34, 4.70, 9.32, 0.72, fill=NAVY, color=WHITE, size=9, align=PP_ALIGN.CENTER, gap=2)
 
 # =================================================== SLIDE 10 - Closing
