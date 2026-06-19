@@ -81,8 +81,13 @@ def banner(slide, text, left, top, width, height, fill=NAVY, tc=WHITE, size=11, 
     _set(para.add_run(), text, size, tc, bold=bold)
     return sh
 
-def img(slide, name, left, top, max_w, max_h, align="center"):
+def img(slide, name, left, top, max_w, max_h, align="center", fit=True):
     path = os.path.join(A, name)
+    if not fit:
+        # Exact placement: (left, top, max_w, max_h) are taken as literal L/T/W/H.
+        # Used to preserve manual image adjustments made directly in PowerPoint.
+        slide.shapes.add_picture(path, Inches(left), Inches(top), Inches(max_w), Inches(max_h))
+        return max_w, max_h
     iw, ih = Image.open(path).size; ar = iw/ih
     w = max_w; h = w/ar
     if h > max_h:
@@ -199,8 +204,8 @@ rich(S[2], [
     [("We score with the ", ), ("True Skill Statistic", True), (", calibrate every probability, and validate only on ", ), ("future time blocks", True), (" - the standard ISRO and the space-weather community actually trust.", )],
     [("We forecast the damaging peak", True), (" - defensible physics - and stay honest that ", ), ("true pre-onset prediction is the harder frontier", False, True), (".", )],
 ], 0.34, 1.08, 4.58, height=4.05, size=8.6, color=BODY, gap=1)
-img(S[2], "spectrum.png",  5.02, 1.18, 4.68, 1.85, align="center")
-img(S[2], "neupert.png",   5.02, 3.10, 4.68, 1.95, align="center")
+img(S[2], "spectrum.png",  5.709, 1.024, 3.251, 2.126, fit=False)
+img(S[2], "neupert.png",   5.709, 3.179, 3.267, 1.949, fit=False)
 banner(S[2], "USP: the only dual-payload, L1-vantage system that turns the Neupert effect into calibrated, TSS-validated lead-time warnings, reproducible at zero cost on a laptop.",
        0.34, 5.18, 9.32, 0.34, fill=NAVY, tc=WHITE, size=9.5)
 
@@ -231,8 +236,8 @@ rich(S[3], [
 
 # =================================================== SLIDE 5 - Process flow / use-case
 title_bar(S[4], "Process flow and use-case")
-img(S[4], "process_flow.png", 0.28, 1.22, 6.25, 3.40, align="center")
-img(S[4], "usecase.png",      6.62, 1.22, 3.10, 3.40, align="center")
+img(S[4], "process_flow.png", 0.079, 1.378, 6.332, 2.953, fit=False)
+img(S[4], "usecase.png",      6.309, 1.378, 3.691, 2.953, fit=False)
 rich(S[4], [
     [("In plain terms: ", True, False, 8.4, AMBER), ("raw satellite files are ", ), ("cleaned", True), (" (bad seconds removed) and merged into one ", ), ("1-second timeline", True), (".", )],
     [("That stream splits into ", ), ("two engines", True), (" running side by side: a ", ), ("classical detector", True), (" that logs flares the moment they start, and an ", ), ("ML forecaster", True), (" that predicts the next one.", )],
@@ -246,8 +251,8 @@ rich(S[4], [
 
 # =================================================== SLIDE 6 - Wireframe / dashboard
 title_bar(S[5], "Wireframe: the operator dashboard")
-img(S[5], "dashboard.png", 0.28, 1.16, 6.25, 3.60, align="left")
-img(S[5], "real_lightcurve.png", 6.60, 1.16, 3.14, 1.05, align="center")
+img(S[5], "dashboard.png", 0.197, 1.16, 6.332, 3.608, fit=False)
+img(S[5], "real_lightcurve.png", 6.529, 1.199, 3.313, 1.028, fit=False)
 rich(S[5], [[("Renders ", False, True, 8, BODY), ("real Aditya-L1 data", True, False, 8, BODY), (" (2026-06-15)", False, True, 8, BODY)]],
      6.60, 2.16, 3.14, 0.3, align=PP_ALIGN.CENTER)
 states = [
@@ -284,9 +289,9 @@ rich(S[5], [
 
 # =================================================== SLIDE 7 - Architecture
 title_bar(S[6], "Architecture of the proposed solution")
-img(S[6], "architecture.png", 0.28, 1.10, 6.05, 3.18, align="left")
-img(S[6], "tss.png",                6.38, 1.10, 3.34, 2.02, align="center")
-img(S[6], "feature_importance.png", 6.38, 3.22, 3.34, 1.78, align="center")
+img(S[6], "architecture.png", 0.28, 1.1, 5.881, 3.319, fit=False)
+img(S[6], "tss.png",                6.161, 1.1, 3.715, 2.05, fit=False)
+img(S[6], "feature_importance.png", 6.161, 3.228, 3.743, 1.969, fit=False)
 rich(S[6], [
     [("How it works: ", True, False, 8, AMBER), ("the cleaned soft and hard light curves feed ", ), ("two paths at once", True), (".", )],
     [("A ", ), ("classical signal-processing detector", True), (" (adaptive baseline plus rise-rate) handles nowcasting, ", ), ("interpretable and training-free", False, True), (".", )],
@@ -294,11 +299,12 @@ rich(S[6], [
     [("Every result is validated with ", ), ("time-blocked cross-validation", True), (" on the ", ), ("True Skill Statistic", True), (", and ", ), ("SHAP", True), (" attributes each alert to the precursor that drove it.", )],
 ], 0.28, 4.34, 6.05, 1.15, size=8, color=BODY, gap=1)
 # Honest-labelling: both right-hand charts are expected output, not measured results.
-_cap = S[6].shapes.add_textbox(Inches(6.38), Inches(5.04), Inches(3.34), Inches(0.22))
+_cap = S[6].shapes.add_textbox(Inches(6.161), Inches(5.21), Inches(3.743), Inches(0.16))
 _cap.text_frame.word_wrap = True
+_cap.text_frame.margin_top = 0; _cap.text_frame.margin_bottom = 0
 _set(_cap.text_frame.paragraphs[0].add_run(),
      "Both right-hand charts are illustrative - expected output, not measured results.",
-     7, MUTED, bold=False, italic=True)
+     6.5, MUTED, bold=False, italic=True)
 _cap.text_frame.paragraphs[0].alignment = PP_ALIGN.CENTER
 
 # =================================================== SLIDE 8 - Technologies (native light table)
