@@ -169,21 +169,22 @@ for sh in S[1].shapes:
     if sh.has_table:
         tbl = sh.table
         cells = {
-            (0,0): ("Team Leader", "Harsh Kawatra", "Delhi Technological University (DTU)"),
-            (0,1): ("Team Member-1", "Gursimran Kaur", "Guru Gobind Singh Indraprastha University (GGSIPU)"),
+            (0,0): ("Team Leader", "Harsh Kawatra", "Delhi Technological University (DTU)", "B.Tech in Electronics and Communications Engineering"),
+            (0,1): ("Team Member-1", "Gursimran Kaur", "Guru Gobind Singh Indraprastha University (GGSIPU)", "BCA (Bachelor of Computer Applications)"),
+            (1,0): ("Team Member-2", "Anuj Gambhir", "Delhi Technological University (DTU)", "B.Tech in Biotechnology"),
         }
-        # Two-person team: leave the Member-2/3 quadrants blank rather than showing empty "-" stubs.
-        for (ri,ci) in [(1,0),(1,1)]:
+        # Three-person team: leave the remaining quadrant blank rather than showing an empty "-" stub.
+        for (ri,ci) in [(1,1)]:
             tbl.cell(ri,ci).text_frame.clear()
-        for (ri,ci),(role,name,college) in cells.items():
+        for (ri,ci),(role,name,college,major) in cells.items():
             tf = tbl.cell(ri,ci).text_frame; tf.clear(); tf.word_wrap = True
             _set(tf.paragraphs[0].add_run(), role, 13, ACCENT, bold=True)
-            for label,val in [("Name: ",name),("College: ",college)]:
+            for label,val in [("Name: ",name),("College: ",college),("Major: ",major)]:
                 par = tf.add_paragraph()
                 _set(par.add_run(), label, 11, INK, bold=True)
                 _set(par.add_run(), val, 11, INK)
 rich(S[1], [[
-    ("A two-person, two-institute team: ", False, False, 10.5, BODY),
+    ("A three-person, two-institute team: ", False, False, 10.5, BODY),
     ("full-stack and AI/ML engineering", True, False, 10.5, BODY),
     (" applied to ISRO's own solar mission.", False, True, 10.5, BODY),
 ]], 0.5, 5.15, 9.0, 0.4, align=PP_ALIGN.CENTER)
