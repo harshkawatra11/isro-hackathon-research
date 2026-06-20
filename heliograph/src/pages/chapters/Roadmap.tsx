@@ -5,9 +5,11 @@ export default function Roadmap() {
   return (
     <>
       <p className="lead">
-        This is how the system actually gets built. Each phase is a self-contained unit of work you hand to{" "}
-        <strong>Claude Code</strong> as your senior developer: it proposes a plan, writes and runs the code, and you
-        sign off on a concrete <em>definition of done</em> before moving on. Expand each phase.
+        This is how the system actually gets built. The build uses <strong>AI implementation to improve speed
+        towards training the model and DevOps</strong> — a force-multiplier under human sign-off, not an autopilot.
+        Each phase is a self-contained unit of work executed with <strong>AI-assisted implementation</strong>: it
+        proposes a plan, writes and runs the code, and you sign off on a concrete <em>definition of done</em> before
+        moving on. Expand each phase.
       </p>
 
       <Figure
@@ -17,12 +19,12 @@ export default function Roadmap() {
         <RoadmapTimeline />
       </Figure>
 
-      <h3 className="prose-h3">How to drive Claude Code well</h3>
+      <h3 className="prose-h3">How to drive the AI implementation well</h3>
       <ul className="ml-5 list-disc text-ink/90">
         <li><strong>One phase per session.</strong> Give it the phase goal and definition of done; let it propose a plan before it writes code.</li>
         <li><strong>Always demand the verification artefact</strong> — a plot, a metric, a printed table. "Show me it works," never "it's done."</li>
         <li><strong>Keep the repo skeleton fixed</strong> so context stays cheap: <code className="code-inline">src/{`{io, labels, nowcast, features, forecast, eval, app}`}</code>, plus <code className="code-inline">data/</code>, <code className="code-inline">notebooks/</code>, <code className="code-inline">reports/</code>.</li>
-        <li><strong>Feed it this guide.</strong> The physics and the rigour arguments here <em>are</em> the spec — point Claude Code at the relevant chapter so its choices match the design.</li>
+        <li><strong>Feed it this guide.</strong> The physics and the rigour arguments here <em>are</em> the spec — point the AI implementation at the relevant chapter so its choices match the design.</li>
       </ul>
 
       <Callout kind="key" title="Verification is the through-line">

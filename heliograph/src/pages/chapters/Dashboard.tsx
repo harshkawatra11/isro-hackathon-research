@@ -51,8 +51,8 @@ export default function Dashboard() {
 
       <Callout kind="good" title="All three deliverables now have a home">
         Catalogue (Ch.13), calibrated forecast (Ch.14), and this alert interface complete ISRO's required outputs.
-        The final engineering chapter lays out the order in which to actually build them — with Claude Code as the
-        developer.
+        The final engineering chapter lays out the order in which to actually build them — with AI-assisted
+        implementation accelerating the build.
       </Callout>
     </>
   );

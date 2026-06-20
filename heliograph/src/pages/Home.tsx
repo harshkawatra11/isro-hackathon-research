@@ -68,7 +68,7 @@ export default function Home() {
             Every model and tool choice is argued against ISRO's evaluation criteria — and the honest limits stated.
           </Pillar>
           <Pillar icon={<Gauge />} title="Built to be built" color="#34d399">
-            A nine-phase roadmap you hand to Claude Code, each phase with a concrete definition of done.
+            A nine-phase roadmap executed with AI-assisted implementation to accelerate model training and DevOps, each phase with a concrete definition of done.
           </Pillar>
         </div>
       </section>

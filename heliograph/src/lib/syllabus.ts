@@ -52,7 +52,7 @@ export const SYLLABUS: Part[] = [
       { slug: "forecasting", n: "14", title: "The Forecasting Engine", blurb: "LightGBM + MiniROCKET hybrid and the Neupert features.", track: "eng", minutes: 13 },
       { slug: "evaluation", n: "15", title: "Evaluation & Rigour", blurb: "TSS, time-blocked CV, calibration — interactive.", track: "eng", minutes: 11 },
       { slug: "dashboard", n: "16", title: "The Alert Dashboard", blurb: "The operator interface and its visual-alert logic.", track: "eng", minutes: 7 },
-      { slug: "roadmap", n: "17", title: "Build Roadmap (Claude Code)", blurb: "Nine phases, each a unit of work with a definition of done.", track: "eng", minutes: 9 },
+      { slug: "roadmap", n: "17", title: "Build Roadmap (AI-Assisted)", blurb: "Nine phases, each a unit of work with a definition of done.", track: "eng", minutes: 9 },
     ],
   },
   {

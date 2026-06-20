@@ -57,7 +57,7 @@ export default function CostTeam() {
       <div className="my-5 flex flex-wrap gap-3">
         <Stat value="₹0" label="capital cost" color="#34d399" />
         <Stat value="~5 GB" label="targeted data" color="#4aa8ff" />
-        <Stat value="~2 wk" label="build w/ Claude Code" color="#ffa726" />
+        <Stat value="~2 wk" label="AI-assisted build" color="#ffa726" />
         <Stat value="CPU" label="first; GPU optional" color="#a78bfa" />
       </div>
 
@@ -81,7 +81,7 @@ export default function CostTeam() {
       <Callout kind="good" title="The guide is complete">
         You've gone from "what is a solar flare?" to a fully-specified, ISRO-aligned, ₹0 system with every diagram on
         screen and a nine-phase build plan. Every template section is covered, every deliverable has a home, and
-        every design choice has a defence. Hand the roadmap to Claude Code and start building — and use{" "}
+        every design choice has a defence. Execute the roadmap with AI-assisted implementation and start building — and use{" "}
         <span className="kbd">Ctrl/Cmd + P</span> to export the submission sections to the BAH-2026 deck.
       </Callout>
 

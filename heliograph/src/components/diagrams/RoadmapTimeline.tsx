@@ -67,7 +67,7 @@ export default function RoadmapTimeline() {
             {isOpen && (
               <div className="space-y-2 border-t border-line px-4 py-3 text-[14px]">
                 <p><span className="font-semibold text-accent2">Goal · </span><span className="text-muted">{p.goal}</span></p>
-                <p><span className="font-semibold text-soft">Claude Code does · </span><span className="text-muted">{p.does}</span></p>
+                <p><span className="font-semibold text-soft">AI implementation · </span><span className="text-muted">{p.does}</span></p>
                 <p><span className="font-semibold text-isro">Definition of done · </span><span className="text-muted">{p.done}</span></p>
               </div>
             )}
