@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const STAGES = [
-  { t: "Raw payload files", d: "SoLEXS .lc/.gti and HEL1OS .lc arrive as gzipped FITS — calibrated Level-1, one row per second.", state: "soft=95 c/s, hard=high · t=13:15:26 · (raw, unvalidated)", color: "#4aa8ff" },
+  { t: "Raw payload files", d: "SoLEXS .lc/.gti and HEL1OS .lc arrive as gzipped FITS, calibrated Level-1, one row per second.", state: "soft=95 c/s, hard=high · t=13:15:26 · (raw, unvalidated)", color: "#4aa8ff" },
   { t: "Ingest + GTI mask", d: "Parse FITS, convert TIME to UTC, and drop any second outside the Good-Time-Intervals.", state: "second is inside GTI → kept", color: "#ff8a3d" },
   { t: "Fuse & resample", d: "Align SoLEXS SDD1/SDD2 and HEL1OS onto one 1-second grid; pick the unsaturated SoLEXS detector for this brightness.", state: "soft=95, hard=42, ratio=0.44 (aligned)", color: "#ff8a3d" },
   { t: "Feature engineering", d: "Compute rolling Neupert features over the trailing window ending at this second.", state: "ratio↑ d/dt=+0.06, soft slope=+18/s, curvature>0", color: "#ff8a3d" },

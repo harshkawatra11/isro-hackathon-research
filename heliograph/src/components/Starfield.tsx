@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-/** Lightweight CSS starfield — fixed, behind everything. */
+/** Lightweight CSS starfield, fixed behind everything. */
 export default function Starfield() {
   const stars = useMemo(
     () =>

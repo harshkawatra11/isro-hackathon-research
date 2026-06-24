@@ -8,7 +8,7 @@ export default function Diagrams() {
     <>
       <p className="lead">
         The ISRO template asks for three diagrams: a process-flow or use-case diagram, and an architecture diagram.
-        All three are here, on screen — the same diagrams that appeared in context throughout the guide, collected
+        All three are here, on screen, the same diagrams that appeared in context throughout the guide, collected
         for the submission and ready to export to the deck.
       </p>
 
@@ -23,7 +23,7 @@ export default function Diagrams() {
       <h3 className="prose-h3">Use-case diagram</h3>
       <Figure
         title="Actors and use cases"
-        caption="Two actors — an operations operator and a researcher — and the four things they do with the system."
+        caption="Two actors: an operations operator and a researcher, and the four things they do with the system."
       >
         <UseCase />
       </Figure>
@@ -31,7 +31,7 @@ export default function Diagrams() {
       <h3 className="prose-h3">Architecture diagram</h3>
       <Figure
         title="Full system architecture (interactive)"
-        caption="The complete layered architecture from Chapter 11 — every component labelled with its technology. Drag to explore."
+        caption="The complete layered architecture from Chapter 11, with every component labelled by its technology. Drag to explore."
       >
         <SystemArchitecture />
       </Figure>

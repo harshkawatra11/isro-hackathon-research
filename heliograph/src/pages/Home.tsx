@@ -22,7 +22,7 @@ export default function Home() {
         </h1>
         <p className="mt-4 max-w-2xl text-xl text-muted">
           An interactive textbook and build blueprint for <strong className="text-ink">nowcasting and
-          forecasting solar flares</strong> from Aditya-L1's combined soft + hard X-ray data — written to take
+          forecasting solar flares</strong> from Aditya-L1's combined soft + hard X-ray data, written to take
           an AI/ML engineer with <em>zero</em> space-science background to the level of someone sitting at ISRO.
         </p>
         <div className="mt-6 flex flex-wrap gap-2.5">
@@ -54,10 +54,10 @@ export default function Home() {
       <section className="py-9">
         <h2 className="mb-1 text-sm font-bold uppercase tracking-wider text-muted">The mission of this document</h2>
         <p className="max-w-3xl text-lg text-ink/90">
-          ISRO doesn't want a summary — it wants a system that <strong>detects a flare the instant it begins</strong>{" "}
+          ISRO doesn't want a summary; it wants a system that <strong>detects a flare the instant it begins</strong>{" "}
           and <strong>warns minutes before its most damaging peak</strong>. To build that, you first have to{" "}
           <em>understand</em> it. This guide teaches the physics, the mission, and the data from first principles,
-          then designs the product against every line of ISRO's stated requirements — with every architecture,
+          then designs the product against every line of ISRO's stated requirements, with every architecture,
           pipeline and physics diagram rendered live, not described.
         </p>
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -65,7 +65,7 @@ export default function Home() {
             Grounded in the actual Aditya-L1 SoLEXS day-file we downloaded and the published instrument papers.
           </Pillar>
           <Pillar icon={<Brain />} title="Rigour, not validation" color="#ff8a3d">
-            Every model and tool choice is argued against ISRO's evaluation criteria — and the honest limits stated.
+            Every model and tool choice is argued against ISRO's evaluation criteria, with honest limits stated.
           </Pillar>
           <Pillar icon={<Gauge />} title="Built to be built" color="#34d399">
             A nine-phase roadmap executed with AI-assisted implementation to accelerate model training and DevOps, each phase with a concrete definition of done.

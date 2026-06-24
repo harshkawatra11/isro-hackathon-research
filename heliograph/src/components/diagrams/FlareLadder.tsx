@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const CLASSES = [
-  { c: "A", lo: 1e-8, color: "#3b4a6b", note: "Background level — barely above the quiet Sun." },
+  { c: "A", lo: 1e-8, color: "#3b4a6b", note: "Background level: barely above the quiet Sun." },
   { c: "B", lo: 1e-7, color: "#4a6fa5", note: "Minor brightenings, very common." },
   { c: "C", lo: 1e-6, color: "#4aa8ff", note: "Small flares; few noticeable effects on Earth." },
   { c: "M", lo: 1e-5, color: "#ffa726", note: "Medium flares; brief radio blackouts at the poles, minor radiation storms." },

@@ -32,26 +32,26 @@ export default function Payloads() {
     <>
       <p className="lead">
         Two instruments, one job split in half. SoLEXS owns the soft band, HEL1OS the hard band, and together they
-        cover roughly <strong>2 to 150 keV</strong> — exactly the range where a flare's thermal and non-thermal
+        cover roughly <strong>2 to 150 keV</strong>, exactly the range where a flare's thermal and non-thermal
         emission live. This chapter is the hardware you're actually modelling.
       </p>
 
       <Figure
         title="Energy coverage of the two payloads"
-        caption="SoLEXS (soft, 2–22 keV) and HEL1OS (hard, 8–150 keV) overlap around 8–22 keV — a region useful for cross-checking the two instruments."
+        caption="SoLEXS (soft, 2–22 keV) and HEL1OS (hard, 8–150 keV) overlap around 8–22 keV, a region useful for cross-checking the two instruments."
       >
         <BandDiagram />
       </Figure>
 
-      <h3 className="prose-h3">SoLEXS — the soft channel</h3>
+      <h3 className="prose-h3">SoLEXS: the soft channel</h3>
       <p>
         <strong>SoLEXS</strong> (Solar Low Energy X-ray Spectrometer), built by the U R Rao Satellite Centre, is a
         Sun-as-a-star soft X-ray spectrometer covering <strong>2–22 keV</strong> at <strong>1-second cadence</strong>.
-        Its detectors are <strong>Silicon Drift Detectors (SDDs)</strong> — compact solid-state devices that produce
+        Its detectors are <strong>Silicon Drift Detectors (SDDs)</strong>, compact solid-state devices that produce
         a charge pulse proportional to each X-ray photon's energy, giving both a count rate (the light curve) and a
         spectrum.
       </p>
-      <Callout kind="key" title="The two-detector trick — how one instrument spans 10,000×">
+      <Callout kind="key" title="The two-detector trick: how one instrument spans 10,000×">
         SoLEXS carries <strong>two SDDs of different sizes</strong>. A flare's brightness varies by four orders of
         magnitude (A→X, Chapter 6), and no single detector handles that range without either missing faint flares
         or saturating on bright ones. So:
@@ -60,17 +60,17 @@ export default function Payloads() {
           <li><strong>The small-area SDD</strong> collects fewer photons → stays unsaturated during <strong>large M/X flares</strong> that would overwhelm the large one (avoiding "pile-up").</li>
         </ul>
         Fusing the two detectors is how we satisfy ISRO's "detect low- <em>and</em> high-class flares" requirement
-        at the instrument level — long before any ML.
+        at the instrument level, long before any ML.
       </Callout>
 
-      <h3 className="prose-h3">HEL1OS — the hard channel</h3>
+      <h3 className="prose-h3">HEL1OS: the hard channel</h3>
       <p>
         <strong>HEL1OS</strong> (High Energy L1 Orbiting X-ray Spectrometer), also from URSC, covers the{" "}
-        <strong>hard band 8–150 keV</strong> with fast timing. It uses semiconductor detectors —{" "}
+        <strong>hard band 8–150 keV</strong> with fast timing. It uses semiconductor detectors,{" "}
         <strong>CdTe</strong> (cadmium telluride) for the lower hard range and <strong>CZT</strong> (cadmium-zinc-
-        telluride) for higher energies — chosen because high-Z materials stop penetrating hard X-rays efficiently. A
+        telluride) for higher energies, chosen because high-Z materials stop penetrating hard X-rays efficiently. A
         collimator restricts its field of view to the Sun. HEL1OS is built to catch the brief, impulsive
-        non-thermal bursts — the <em>early</em> half of the Neupert relationship.
+        non-thermal bursts: the <em>early</em> half of the Neupert relationship.
       </p>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -86,7 +86,7 @@ export default function Payloads() {
 
       <Callout kind="deep" title="What 'Level-1' means for these instruments">
         Both deliver data at processing levels. <strong>Level-0</strong> is raw telemetry. <strong>Level-1</strong>{" "}
-        — what we download — is calibrated, time-tagged, and in physical units (counts/s vs time, plus spectra),
+        is what we download: calibrated, time-tagged, and in physical units (counts/s vs time, plus spectra),
         with Good-Time-Intervals marking valid data. <strong>Level-2</strong> would be higher science products
         (e.g. fluxes, temperatures). Level-1 light curves are the right altitude for flare detection: clean,
         time-aligned, and unopinionated. The next chapter opens a real Level-1 file byte by byte.

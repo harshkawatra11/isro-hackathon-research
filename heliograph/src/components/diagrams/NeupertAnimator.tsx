@@ -51,8 +51,8 @@ export default function NeupertAnimator() {
 
     ctx.font = "11px Inter, sans-serif";
     ctx.fillStyle = "#5c6884";
-    ctx.fillText("HARD X-ray (HEL1OS) — impulsive", padL + 4, padT + 2);
-    ctx.fillText("SOFT X-ray (SoLEXS) — gradual", padL + 4, mid + 14);
+    ctx.fillText("HARD X-ray (HEL1OS), impulsive", padL + 4, padT + 2);
+    ctx.fillText("SOFT X-ray (SoLEXS), gradual", padL + 4, mid + 14);
 
     // lead-time band between hard peak and soft peak
     if (head > hardPeak) {
@@ -139,8 +139,8 @@ export default function NeupertAnimator() {
         />
       </div>
       <div className="mt-2 flex flex-wrap gap-4 text-[12.5px] text-muted">
-        <Legend c="#ff6b1a" t="Hard X-ray — rises first" />
-        <Legend c="#4aa8ff" t="Soft X-ray — peaks later" />
+        <Legend c="#ff6b1a" t="Hard X-ray, rises first" />
+        <Legend c="#4aa8ff" t="Soft X-ray, peaks later" />
         <Legend c="#a78bfa" t="d/dt of soft ≈ hard" />
       </div>
     </div>

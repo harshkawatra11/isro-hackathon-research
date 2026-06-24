@@ -41,7 +41,7 @@ export default function Labels() {
       <p className="lead">
         A supervised model is only as good as its labels. We need to tell the model, for every moment in the data,
         whether a flare is happening (for nowcasting) or about to happen (for forecasting). Hand-labelling 1,500
-        days of one-second data is impossible — so we borrow ground truth from a catalog that already exists.
+        days of one-second data is impossible, so we borrow ground truth from a catalog that already exists.
       </p>
 
       <h3 className="prose-h3">The GOES X-ray flare catalog</h3>
@@ -53,7 +53,7 @@ export default function Labels() {
       </p>
 
       <Callout kind="good" title="Why we can use Earth-based labels for an L1 spacecraft">
-        GOES orbits Earth; Aditya-L1 sits 1.5 million km sunward. Does the timing still line up? Yes — the
+        GOES orbits Earth; Aditya-L1 sits 1.5 million km sunward. Does the timing still line up? Yes: the
         light-travel difference is only a few seconds, utterly negligible against flares that evolve over minutes.
         So a flare peaking at 13:15:00 UTC in the GOES catalog peaks at essentially the same UTC second in our
         SoLEXS data. The labels transfer cleanly. (We <em>verify</em> this in Phase 2 of the build by checking that
@@ -62,7 +62,7 @@ export default function Labels() {
 
       <h3 className="prose-h3">From timestamps to training windows</h3>
       <p>
-        Each catalog entry lets us carve the continuous light curve into labelled windows — and the distinction
+        Each catalog entry lets us carve the continuous light curve into labelled windows, and the distinction
         between the yellow and red zones below is the entire difference between forecasting and nowcasting:
       </p>
 
@@ -75,12 +75,12 @@ export default function Labels() {
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Card icon="🟢" title="Quiet windows" accent="#34d399">
-          Periods with no catalog flare. The abundant negative class — and the reason accuracy is a misleading
+          Periods with no catalog flare. The abundant negative class, and the reason accuracy is a misleading
           metric (Chapter 15).
         </Card>
         <Card icon="🟡" title="Pre-flare windows" accent="#fbbf24">
           The minutes <em>before</em> a flare's onset. The forecaster is trained to separate these from quiet
-          windows — that separation is the prediction.
+          windows; that separation is the prediction.
         </Card>
         <Card icon="🔴" title="Flare windows" accent="#f0506e">
           Onset → peak → decay. The nowcaster must flag these in real time and the catalogue records them.
@@ -90,14 +90,14 @@ export default function Labels() {
       <Callout kind="warn" title="The labelling subtlety that makes or breaks the model">
         The forecasting label is a <strong>choice</strong>: "did a flare begin within the next N minutes?" That N
         defines the forecast horizon. Too short and there's no useful warning; too long and the pre-flare signal is
-        too faint to learn. We treat N as a tuned hyper-parameter and report results per horizon — never quietly
+        too faint to learn. We treat N as a tuned hyper-parameter and report results per horizon, never quietly
         picking the N that flatters the metrics. And because flares are rare, these windows are extremely
         imbalanced, which dictates both the model design (Chapter 14) and the evaluation (Chapter 15).
       </Callout>
 
       <Callout kind="key" title="Part II complete">
         You now know the spacecraft, the instruments, the real data format, and where ground truth comes from. The
-        physics and the data are in hand. Part III designs the product that turns them into flare warnings —
+        physics and the data are in hand. Part III designs the product that turns them into flare warnings,
         starting with the full system architecture.
       </Callout>
     </>

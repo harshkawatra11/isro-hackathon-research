@@ -4,7 +4,7 @@ const COST = [
   ["Aditya-L1 SoLEXS + HEL1OS data", "₹0", "free via ISSDC PRADAN (registered)"],
   ["GOES flare catalog (labels)", "₹0", "free, NOAA"],
   ["Software stack", "₹0", "all open-source (BSD/MIT/Apache)"],
-  ["Compute", "₹0", "existing laptop — i5-13420H / RTX 3050 / 16 GB"],
+  ["Compute", "₹0", "existing laptop (i5-13420H / RTX 3050 / 16 GB)"],
   ["Storage", "₹0", "existing 256 GB external drive (~5 GB used)"],
   ["Hosting (demo)", "₹0", "Streamlit local; optional free HF Spaces"],
 ];
@@ -26,8 +26,8 @@ export default function CostTeam() {
   return (
     <>
       <p className="lead">
-        The last two template slides: the estimated implementation cost, and the team cover. The cost story is the
-        easy part — there isn't one.
+        The last two template slides: the estimated implementation cost, and the team cover. The cost story is
+        simple, because there isn't one.
       </p>
 
       <h3 className="prose-h3">Estimated implementation cost</h3>
@@ -81,7 +81,7 @@ export default function CostTeam() {
       <Callout kind="good" title="The guide is complete">
         You've gone from "what is a solar flare?" to a fully-specified, ISRO-aligned, ₹0 system with every diagram on
         screen and a nine-phase build plan. Every template section is covered, every deliverable has a home, and
-        every design choice has a defence. Execute the roadmap with AI-assisted implementation and start building — and use{" "}
+        every design choice has a defence. Execute the roadmap with AI-assisted implementation and start building. Use{" "}
         <span className="kbd">Ctrl/Cmd + P</span> to export the submission sections to the BAH-2026 deck.
       </Callout>
 

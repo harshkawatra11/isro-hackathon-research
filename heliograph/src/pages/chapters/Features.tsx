@@ -17,7 +17,7 @@ export default function Features() {
     <>
       <p className="lead">
         The template's "features" and "technologies" slides, in one place. The feature list is what the solution
-        does; the tech stack is what it's made of — every choice justified earlier in the guide, every dependency
+        does; the tech stack is what it's made of, with every choice justified earlier in the guide, every dependency
         free and CPU-first.
       </p>
 
@@ -25,11 +25,11 @@ export default function Features() {
       <div className="grid gap-4 sm:grid-cols-2">
         <Card icon="🗂️" title="1 · Automated nowcast catalogue">
           Real-time flare detection on soft + hard channels, merged into one master catalogue with onset/peak/end,
-          relative class, and significance — no manual intervention.
+          relative class, and significance, with no manual intervention.
         </Card>
         <Card icon="⏱️" title="2 · Calibrated forecast + lead time">
           <code className="code-inline">P(flare ≤ N min)</code> with a calibrated confidence and a measured
-          lead-time distribution — the headline ISRO metric.
+          lead-time distribution, the headline ISRO metric.
         </Card>
         <Card icon="🚨" title="3 · Live dashboard with visual alerts">
           Dual light curves + hard/soft ratio + a green/amber/red banner that flips before the soft peak, with a
@@ -39,7 +39,7 @@ export default function Features() {
           Adaptive baselining + dual SoLEXS detectors detect both faint A/B/C and giant M/X flares.
         </Card>
         <Card icon="🔍" title="5 · Explainable alerts (SHAP)">
-          Every forecast says <em>why</em> — which precursor drove it — so scientists can trust and audit it.
+          Every forecast says <em>why</em>: which precursor drove it, so scientists can trust and audit it.
         </Card>
         <Card icon="💻" title="6 · Offline & reproducible">
           No cloud, no cost, no proprietary software. End-to-end on a single laptop from public data.
@@ -70,7 +70,7 @@ export default function Features() {
 
       <Callout kind="good" title="Every dependency is free and CPU-first">
         The entire stack is open-source (BSD/MIT/Apache/PSF) and runs CPU-first on the target machine
-        (i5-13420H / RTX 3050 / 16 GB). GPU is optional, never required — which is what makes the ₹0 cost claim in
+        (i5-13420H / RTX 3050 / 16 GB). GPU is optional, never required, which is what makes the ₹0 cost claim in
         the next chapter real.
       </Callout>
     </>

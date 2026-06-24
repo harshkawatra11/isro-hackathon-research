@@ -11,7 +11,7 @@ interface Payload {
 
 const PAYLOADS: Payload[] = [
   { id: "VELC", name: "Visible Emission Line Coronagraph", kind: "remote", by: "IIA", measures: "Images the inner corona and its magnetic field; observes CMEs close to the solar disk. The mission's primary payload." },
-  { id: "SUIT", name: "Solar Ultraviolet Imaging Telescope", kind: "remote", by: "IUCAA", measures: "Near-UV (200–400 nm) images of the photosphere and chromosphere — the layers below the corona." },
+  { id: "SUIT", name: "Solar Ultraviolet Imaging Telescope", kind: "remote", by: "IUCAA", measures: "Near-UV (200–400 nm) images of the photosphere and chromosphere, the layers below the corona." },
   { id: "SoLEXS", name: "Solar Low Energy X-ray Spectrometer", kind: "remote", by: "URSC", measures: "Sun-as-a-star SOFT X-rays, 2–22 keV, 1-second cadence. Our soft channel.", ours: true },
   { id: "HEL1OS", name: "High Energy L1 Orbiting X-ray Spectrometer", kind: "remote", by: "URSC", measures: "Sun-as-a-star HARD X-rays, 8–150 keV, fast timing. Our hard channel.", ours: true },
   { id: "ASPEX", name: "Aditya Solar wind Particle Experiment", kind: "insitu", by: "PRL", measures: "In-situ solar wind / energetic ions (protons, alphas, heavier) via its SWIS and STEPS sensors." },

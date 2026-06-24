@@ -11,10 +11,10 @@ export default function DashboardWireframe() {
       {/* alert banner */}
       <rect x={26} y={26} width={W - 52} height={38} rx={8} fill="rgba(240,80,110,0.14)" stroke="#f0506e" />
       <circle cx={48} cy={45} r={6} fill="#f0506e" />
-      <text x={64} y={50} fontSize="13.5" fontWeight={700} fill="#f0506e">🚨 ALERT — M-class flare forecast · ~7 min lead · confidence 0.82</text>
+      <text x={64} y={50} fontSize="13.5" fontWeight={700} fill="#f0506e">🚨 ALERT: M-class flare forecast · ~7 min lead · confidence 0.82</text>
       {/* dual light curve */}
       <rect x={26} y={78} width={W - 52} height={140} rx={8} fill="#111a2e" stroke="#233150" />
-      <text x={40} y={97} fontSize="11" fill="#93a0b8">Dual light curve — soft (blue) + hard (orange) + playhead</text>
+      <text x={40} y={97} fontSize="11" fill="#93a0b8">Dual light curve: soft (blue) + hard (orange) + playhead</text>
       {lc(52, 56, "#4aa8ff", 2)}
       {lc(44, 64, "#ff6b1a", 2)}
       <line x1={420} y1={88} x2={420} y2={208} stroke="#fff" strokeDasharray="4 4" />

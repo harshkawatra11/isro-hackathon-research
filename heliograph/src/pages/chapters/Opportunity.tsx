@@ -21,11 +21,11 @@ export default function Opportunity() {
           flare's emission rather than one.
         </Card>
         <Card icon="⏱️" title="Physics-grounded lead time" accent="#ffa726">
-          It forecasts the damaging soft-X-ray peak using the <strong>Neupert effect</strong> — a real physical
-          mechanism — not an opaque curve fit.
+          It forecasts the damaging soft-X-ray peak using the <strong>Neupert effect</strong>, a real physical
+          mechanism, not an opaque curve fit.
         </Card>
         <Card icon="📏" title="Honest, standard evaluation" accent="#34d399">
-          It is <strong>TSS-driven</strong>, calibrated, and time-blocked — the metrics the space-weather community
+          It is <strong>TSS-driven</strong>, calibrated, and time-blocked: the metrics the space-weather community
           actually trusts, reported without inflation.
         </Card>
       </div>
@@ -33,14 +33,14 @@ export default function Opportunity() {
       <h3 className="prose-h3">How will it solve the problem?</h3>
       <p>
         Nowcasting delivers operators an instant, automated flare catalogue. Forecasting delivers the one thing they
-        cannot otherwise buy: <strong>minutes of warning before the peak</strong> — enough to safe-mode satellites,
+        cannot otherwise buy: <strong>minutes of warning before the peak</strong>, enough to safe-mode satellites,
         pause GPS-critical operations, and reduce grid loading. Because the whole system runs offline on commodity
         hardware from free public data, it is deployable anywhere ISRO needs it, with no recurring cost.
       </p>
 
-      <Callout kind="key" title="USP — in one sentence">
+      <Callout kind="key" title="USP: in one sentence">
         <strong>The only dual-payload, L1-vantage flare system that turns the Neupert effect into calibrated,
-        TSS-validated lead-time warnings — fully reproducible at ₹0 on a laptop.</strong>
+        TSS-validated lead-time warnings, fully reproducible at ₹0 on a laptop.</strong>
       </Callout>
 
       <h3 className="prose-h3">Why it will land with these judges</h3>
@@ -48,7 +48,7 @@ export default function Opportunity() {
         The evaluators are ISRO scientists, and the data is from ISRO's own mission. A submission that uses{" "}
         <em>their</em> satellite's two payloads correctly, respects the real physics of the Sun, and is honest about
         the difference between defensible peak-forecasting and frontier onset-forecasting (Chapter 5) signals
-        genuine domain understanding — not a generic ML pipeline pointed at unfamiliar data. That credibility, plus
+        genuine domain understanding, not a generic ML pipeline pointed at unfamiliar data. That credibility, plus
         a quantifiable lead-time number, is the winning combination.
       </p>
     </>

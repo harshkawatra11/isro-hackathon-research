@@ -12,8 +12,8 @@ const LAYERS: Layer[] = [
   { name: "Core", r: 34, color: "#fff0b3", temp: "15 million K", desc: "Nuclear fusion of hydrogen into helium powers the entire Sun. Energy generated here takes ~100,000 years to reach the surface." },
   { name: "Radiative zone", r: 70, color: "#ffcf6b", temp: "7–2 million K", desc: "Energy crawls outward as photons are absorbed and re-emitted countless times." },
   { name: "Convective zone", r: 104, color: "#ff9d3c", temp: "2 million – 5700 K", desc: "Hot plasma physically rises and sinks like a boiling pot, generating the Sun's magnetic field through the dynamo effect." },
-  { name: "Photosphere", r: 120, color: "#ff7a1a", temp: "~5,800 K", desc: "The visible 'surface'. Sunspots — cool, intensely magnetic regions — appear here and anchor the loops that produce flares." },
-  { name: "Chromosphere", r: 134, color: "#e0512e", temp: "~10,000 K", desc: "A thin layer above the surface. Flare-accelerated electrons slam into its dense plasma — this is where hard X-rays are made." },
+  { name: "Photosphere", r: 120, color: "#ff7a1a", temp: "~5,800 K", desc: "The visible 'surface'. Sunspots are cool, intensely magnetic regions that appear here and anchor the loops that produce flares." },
+  { name: "Chromosphere", r: 134, color: "#e0512e", temp: "~10,000 K", desc: "A thin layer above the surface. Flare-accelerated electrons slam into its dense plasma. This is where hard X-rays are made." },
   { name: "Corona", r: 168, color: "#9fc6ff", temp: "1–3 million K", desc: "The outer atmosphere, mysteriously hotter than the surface. Magnetic reconnection here releases the energy of a flare; the heated loops glow in soft X-rays." },
 ];
 

@@ -55,7 +55,7 @@ export default function L1Orbit() {
         ~1.5 million km (≈1% of Sun–Earth distance)
       </text>
       <text x={360} y={282} textAnchor="middle" fontSize="11" fill="#93a0b8">
-        L1 gives a continuous, never-eclipsed view of the Sun — ideal for non-stop monitoring
+        L1 gives a continuous, never-eclipsed view of the Sun, ideal for non-stop monitoring
       </text>
     </svg>
   );
