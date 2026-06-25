@@ -161,8 +161,7 @@ for sh in S[0].shapes:
     elif t.startswith("Team Leader"):    val = "  Harsh Kawatra"
     else: continue
     _set(sh.text_frame.paragraphs[0].add_run(), val, 16, ACCENT, bold=True)
-caption(S[0], "SoLEXS 2-22 keV     HEL1OS 8-150 keV     LightGBM + MiniROCKET     TSS-driven     Zero cost on a laptop",
-        0.34, 5.18, 9.3, size=9.5, color=SOFTB, align=PP_ALIGN.LEFT, bold=True)
+# (slide-1 footer caption removed per manual edit)
 
 # =================================================== SLIDE 2 - Team
 for sh in S[1].shapes:
@@ -183,23 +182,22 @@ for sh in S[1].shapes:
                 par = tf.add_paragraph(); par.space_after = Pt(4)
                 _set(par.add_run(), label, 11, INK, bold=True)
                 _set(par.add_run(), val, 11, INK)
-rich(S[1], [[
-    ("A four-person, three-institute team: ", False, False, 10.5, BODY),
-    ("full-stack and AI/ML engineering", True, False, 10.5, BODY),
-    (" applied to ISRO's own solar mission.", False, True, 10.5, BODY),
-]], 0.5, 5.15, 9.0, 0.4, align=PP_ALIGN.CENTER)
+# (slide-2 sub-caption removed per manual edit)
 
 # =================================================== SLIDE 3 - Opportunity & USP
 title_bar(S[2], "Opportunity and USP")
 rich(S[2], [
     [('Most flare tools use a single channel from Earth orbit, and most blur detection and forecasting into one. ', False, False, 9.5),
      ("SuryaSetu is built differently on three axes:", True, False, 9.5)],
+    [("", )],
     [("1. Dual-payload fusion.", True, False, 9.5, ACCENT)],
     [("SoLEXS measures ", ), ("soft X-rays", True), (" (the heat a flare gives off) and HEL1OS measures ", ), ("hard X-rays", True), (" (the instant energy is released).", )],
     [("We merge both onto a ", ), ("single timeline", True), (" from the L1 vantage, so the model reads the ", ), ("full physics", True), (" of a flare instead of half of it - ", ), ("the reason we expect to outperform single-channel tools, which we prove with a single-vs-dual ablation.", False, True)],
+    [("", )],
     [("2. Physics-grounded lead time.", True, False, 9.5, SOFTB)],
     [("Hard X-rays surge several minutes before the damaging ", ), ("soft-X-ray peak", True), (", a real published relationship called the ", ), ("Neupert effect", True), (".", )],
     [("We convert that natural head-start into the actual ", ), ("warning time", True), (" an operator needs, so the forecast rests on solar physics, ", ), ("not a curve fit that only matches past data.", False, True)],
+    [("", )],
     [("3. Honest, operational evaluation.", True, False, 9.5, GREEN)],
     [('Flares are rare, so a model that always says "no flare" looks ', ), ("99% accurate", True), (" and is useless.", )],
     [("We score with the ", ), ("True Skill Statistic", True), (", calibrate every probability, and validate only on ", ), ("future time blocks", True), (" - the standard ISRO and the space-weather community actually trust.", )],
@@ -290,7 +288,7 @@ rich(S[5], [
 
 # =================================================== SLIDE 7 - Architecture
 title_bar(S[6], "Architecture of the proposed solution")
-img(S[6], "architecture.png", 0.28, 1.1, 5.881, 3.319, fit=False)
+img(S[6], "architecture.png", 0.28, 1.061, 5.881, 3.319, fit=False)
 img(S[6], "tss.png",                6.161, 1.1, 3.715, 2.05, fit=False)
 img(S[6], "feature_importance.png", 6.161, 3.228, 3.743, 1.969, fit=False)
 rich(S[6], [
@@ -355,17 +353,17 @@ lines(S[7], [
 ], 8.05, 1.20, 1.78, height=3.55)
 VURL = "https://isro-hack-research.vercel.app"
 rich(S[7], [
-    [("Proof of work and open-sourced research: ", True, False, 9, WHITE),
+    [("Proof of Work and Open-Sourced Research: ", True, False, 9, WHITE),
      ("isro-hack-research.vercel.app", True, False, 9, LINKB, VURL, True),
-     ("( Ctrl+Click to Know )", True, False, 9, LINKB, VURL, True),
-     (" - a complete, first-principles companion to the science, data, and methodology behind SuryaSetu,", False, False, 8.7, WHITE)],
-    [("written and published so any engineer can understand and rebuild the system.", False, True, 8.7, WHITE)],
+     ("(Click to Open)", True, False, 9, LINKB, VURL, True),
+     (" - a complete, first-principles companion to the science, data, and methodology behind SuryaSetu, ", False, False, 8.7, WHITE),
+     ("written and published so any engineer can understand the engineering behind the system.", False, True, 8.7, WHITE)],
 ], 0.34, 4.82, 9.32, 0.62, fill=NAVY, color=WHITE, size=9, align=PP_ALIGN.CENTER, gap=1)
 
 # =================================================== SLIDE 9 - Cost
 title_bar(S[8], "Estimated implementation cost")
 lines(S[8], [
-    ("Prototype (our submission): effectively zero rupees. It needs only an internet connection and a modern laptop CPU (GPU optional for faster training and speed), all of which we already own.", 10.5, ACCENT, True, False, False),
+    ("Prototype (our submission): effectively zero rupees. It needs only an internet connection for development and a modern laptop CPU (GPU optional for faster training and speed), all of which we already own.", 10.5, ACCENT, True, False, False),
 ], 0.34, 1.12, 9.3, height=0.55)
 rows = [
     ("Item","Cost","Note"),
@@ -373,7 +371,7 @@ rows = [
     ("GOES flare catalog (labels)","Rs 0","free, NOAA SWPC"),
     ("Software stack","Rs 0","all open-source (BSD/MIT/Apache)"),
     ("Compute","Rs 0","existing laptop, i5 / RTX 3050 / 16 GB"),
-    ("Storage","Rs 0","existing 256 GB drive (~5 GB used)"),
+    ("Storage","Rs 0","external 256 GB drive"),
     ("Hosting (demo)","Rs 0","Streamlit local / free HF Spaces"),
     ("TOTAL (prototype)","Rs 0","only real input is engineering time"),
 ]
@@ -392,7 +390,7 @@ for ri,row in enumerate(rows):
 img(S[8], "data_funnel.png", 6.05, 1.62, 3.65, 2.78, align="center")
 rich(S[8], [
     [("Cost at ISRO scale", True, False, 9.5, AMBER), (" (operational, scoped on selection):", False, True, 9, WHITE)],
-    [("compute at scale", True), ("  (GPU cluster or cloud)   |   ", ), ("redundant full-mission storage", True), ("   |   ", ), ("internet and data egress", True), ("   |   ", ), ("engineering and MLOps staff", True), (".", )],
+    [("Compute at Scale", True), (" (GPU cluster or cloud) | ", ), ("Redundant Full-Mission Storage", True), (" | ", ), ("Internet and Data Egress", True), (" | ", ), ("Engineering and MLOps staff", True), (".", )],
 ], 0.34, 4.70, 9.32, 0.72, fill=NAVY, color=WHITE, size=9, align=PP_ALIGN.CENTER, gap=2)
 
 # =================================================== SLIDE 10 - Closing
