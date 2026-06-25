@@ -169,8 +169,8 @@ for sh in S[1].shapes:
         tbl = sh.table
         cells = {
             (0,0): ("Team Leader", "Harsh Kawatra", "Delhi Technological University (DTU)"),
-            (0,1): ("Team Member-1", "Gursimran Kaur", "Guru Gobind Singh Indraprastha University (GGSIPU)"),
-            (1,0): ("Team Member-2", "Anuj Gambhir", "Delhi Technological University (DTU)"),
+            (0,1): ("Team Member-1", "Anuj Gambhir", "Delhi Technological University (DTU)"),
+            (1,0): ("Team Member-2", "Gursimran Kaur", "Shri Guru Tegh Bahadur Institute of Management and Information Technology (SGTBIMIT)"),
             (1,1): ("Team Member-3", "Dayita Arora", "Ramjas College (DU)"),
         }
         # Four-person team: all quadrants filled.
@@ -275,6 +275,7 @@ for label, col, descp in states:
     tb = S[5].shapes.add_textbox(Inches(6.82), Inches(y-0.04), Inches(2.92), Inches(0.86))
     tf = tb.text_frame; tf.word_wrap = True; tf.auto_size = MSO_AUTO_SIZE.NONE
     _set(tf.paragraphs[0].add_run(), label, 10.5, col, bold=True)
+    tf.add_paragraph()  # manual blank line after the heading
     for para in descp:
         pp = tf.add_paragraph(); pp.space_after = Pt(1)
         for run in para:
@@ -349,7 +350,7 @@ lines(S[7], [
     ("", 4, INK, False, False, False),
     ("The same open-source stack scales straight onto ISRO's far larger infrastructure for full-mission throughput.", 9, INK, False, False, False),
     ("", 4, INK, False, False, False),
-    ("In ISRO's own tradition: the best results from the least resources.", 9, GREEN, True, True, False),
+    ("We optimized for maximum proof of work, not price; zero cost is simply what rigour happened to cost us.", 9, GREEN, True, True, False),
 ], 8.05, 1.20, 1.78, height=3.55)
 VURL = "https://isro-hack-research.vercel.app"
 rich(S[7], [
@@ -357,7 +358,7 @@ rich(S[7], [
      ("isro-hack-research.vercel.app", True, False, 9, LINKB, VURL, True),
      ("(Click to Open)", True, False, 9, LINKB, VURL, True),
      (" - a complete, first-principles companion to the science, data, and methodology behind SuryaSetu, ", False, False, 8.7, WHITE),
-     ("written and published so any engineer can understand the engineering behind the system.", False, True, 8.7, WHITE)],
+     ("written and published so any engineer can understand the engineering and knowledge behind the system.", False, True, 8.7, WHITE)],
 ], 0.34, 4.82, 9.32, 0.62, fill=NAVY, color=WHITE, size=9, align=PP_ALIGN.CENTER, gap=1)
 
 # =================================================== SLIDE 9 - Cost
