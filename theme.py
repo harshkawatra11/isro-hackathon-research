@@ -44,10 +44,11 @@ plt.rcParams.update({
     "xtick.color": MUTED,
     "ytick.color": MUTED,
     "text.color": INK,
+    "savefig.dpi": 450,
 })
 
 
-def panel_fig(w=9.0, h=5.0, dpi=300):
+def panel_fig(w=9.0, h=5.0, dpi=450):
     """A dark self-contained panel figure on transparent ground (sits on white slide)."""
     fig = plt.figure(figsize=(w, h), dpi=dpi)
     fig.patch.set_alpha(0)
@@ -61,7 +62,7 @@ def panel_fig(w=9.0, h=5.0, dpi=300):
     return fig, ax
 
 
-def chart_fig(w=6.0, h=4.2, dpi=300):
+def chart_fig(w=6.0, h=4.2, dpi=450):
     """A dark panel with a real matplotlib data axis inside."""
     fig = plt.figure(figsize=(w, h), dpi=dpi)
     fig.patch.set_facecolor(BG)
