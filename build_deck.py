@@ -169,9 +169,9 @@ for sh in S[1].shapes:
     if sh.has_table:
         tbl = sh.table
         cells = {
-            (0,0): ("Team Leader", "Harsh Kawatra", "Delhi Technological University (DTU)", "B.Tech in Electronics and Communications Engineering"),
+            (0,0): ("Team Leader", "Harsh Kawatra", "Delhi Technological University (DTU)", "B.Tech in Electronics and Communications Engineering (ECE)"),
             (0,1): ("Team Member-1", "Gursimran Kaur", "Guru Gobind Singh Indraprastha University (GGSIPU)", "BCA (Bachelor of Computer Applications)"),
-            (1,0): ("Team Member-2", "Anuj Gambhir", "Delhi Technological University (DTU)", "B.Tech in Biotechnology"),
+            (1,0): ("Team Member-2", "Anuj Gambhir", "Delhi Technological University (DTU)", "B.Tech in Biotechnology (BT)"),
             (1,1): ("Team Member-3", "Dayita Arora", "Ramjas College (DU)", "B.Sc in Statistics"),
         }
         # Four-person team: all quadrants filled.
@@ -189,7 +189,7 @@ rich(S[1], [[
 ]], 0.5, 5.15, 9.0, 0.4, align=PP_ALIGN.CENTER)
 
 # =================================================== SLIDE 3 - Opportunity & USP
-title_bar(S[2], "Opportunity and USP: why SuryaSetu wins")
+title_bar(S[2], "Opportunity and USP")
 rich(S[2], [
     [('Most flare tools use a single channel from Earth orbit, and most blur detection and forecasting into one. ', False, False, 9.5),
      ("SuryaSetu is built differently on three axes:", True, False, 9.5)],
@@ -217,7 +217,7 @@ feats = [
     ("03", GREEN,  "Live dashboard + visual alerts", "Dual light curves, hard/soft ratio and a green, amber, red banner that flips before the peak."),
     ("04", AMBER,  "Full A-to-X dynamic range", "Adaptive baselining plus dual SoLEXS detectors catch faint A/B/C and giant M/X flares."),
     ("05", PURPLE, "Explainable alerts (SHAP)", "Every forecast states which precursor fired it, so scientists can trust and audit it."),
-    ("06", RED,    "Offline and reproducible", "No cloud, no cost, no proprietary software: end-to-end on one laptop from public data."),
+    ("06", RED,    "Offline and Reproducible", "No cloud for prototyping, no external cost, no proprietary software: end-to-end on one laptop from public data."),
 ]
 cols_x = [0.45, 5.15]; colw = 4.45; rows_y = [1.24, 2.42, 3.60]
 for i, (num, col, ttl, body) in enumerate(feats):
@@ -253,8 +253,8 @@ rich(S[4], [
 title_bar(S[5], "Wireframe: the operator dashboard")
 img(S[5], "dashboard.png", 0.197, 1.16, 6.332, 3.608, fit=False)
 img(S[5], "real_lightcurve.png", 6.529, 1.199, 3.313, 1.028, fit=False)
-rich(S[5], [[("Renders ", False, True, 8, BODY), ("real Aditya-L1 data", True, False, 8, BODY), (" (2026-06-15)", False, True, 8, BODY)]],
-     6.60, 2.16, 3.14, 0.3, align=PP_ALIGN.CENTER)
+rich(S[5], [[("Renders Aditya-L1 data", True, False, 8, BODY), (" (Sample via : ISSDC PRADAN PORTAL)", False, True, 8, BODY)]],
+     6.60, 2.24, 3.14, 0.3, align=PP_ALIGN.CENTER)
 states = [
     ("QUIET", GREEN, [
         [("The Sun is ", ), ("calm", True), (" and ", ), ("no action is needed", True), (".", )],
@@ -346,7 +346,7 @@ for ri, (layer, tool, why, lic, col) in enumerate(stack, start=1):
 lines(S[7], [
     ("Every layer, justified.", 11, ACCENT, True, False, False),
     ("", 5, INK, False, False, False),
-    ("The prototype runs on a modest laptop (i5 / RTX 3050 / 16 GB) - proof that the method, not the hardware, does the work.", 9, INK, False, False, False),
+    ("The prototype runs on a modest laptop (i5 13420-H / NVIDIA RTX 3050 / 16 GB) - proof that the method does the work.", 9, INK, False, False, False),
     ("", 4, INK, False, False, False),
     ("The same open-source stack scales straight onto ISRO's far larger infrastructure for full-mission throughput.", 9, INK, False, False, False),
     ("", 4, INK, False, False, False),
@@ -354,9 +354,9 @@ lines(S[7], [
 ], 8.05, 1.20, 1.78, height=3.55)
 VURL = "https://isro-hack-research.vercel.app"
 rich(S[7], [
-    [("Proof of work and open research: ", True, False, 9, WHITE),
+    [("Proof of work and open-sourced research: ", True, False, 9, WHITE),
      ("isro-hack-research.vercel.app", True, False, 9, LINKB, VURL, True),
-     ("  [ Click to Know ]", True, False, 9, LINKB, VURL, True),
+     ("( Ctrl+Click to Know )", True, False, 9, LINKB, VURL, True),
      (" - a complete, first-principles companion to the science, data, and methodology behind SuryaSetu,", False, False, 8.7, WHITE)],
     [("written and published so any engineer can understand and rebuild the system.", False, True, 8.7, WHITE)],
 ], 0.34, 4.82, 9.32, 0.62, fill=NAVY, color=WHITE, size=9, align=PP_ALIGN.CENTER, gap=1)
@@ -364,7 +364,7 @@ rich(S[7], [
 # =================================================== SLIDE 9 - Cost
 title_bar(S[8], "Estimated implementation cost")
 lines(S[8], [
-    ("Prototype (our submission): effectively zero rupees. It needs only an internet connection and a modern laptop CPU (GPU optional), all of which we already own.", 10.5, ACCENT, True, False, False),
+    ("Prototype (our submission): effectively zero rupees. It needs only an internet connection and a modern laptop CPU (GPU optional for faster training and speed), all of which we already own.", 10.5, ACCENT, True, False, False),
 ], 0.34, 1.12, 9.3, height=0.55)
 rows = [
     ("Item","Cost","Note"),

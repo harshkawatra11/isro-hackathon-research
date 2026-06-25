@@ -9,18 +9,12 @@ const COST = [
   ["Hosting (demo)", "₹0", "Streamlit local; optional free HF Spaces"],
 ];
 
-function Field({ label, defaultValue, placeholder }: { label: string; defaultValue?: string; placeholder?: string }) {
-  return (
-    <label className="mb-2 flex items-center gap-3">
-      <span className="w-36 shrink-0 text-sm text-muted">{label}</span>
-      <input
-        defaultValue={defaultValue}
-        placeholder={placeholder}
-        className="flex-1 rounded-lg border border-line bg-bg2 px-3 py-2 text-[15px] text-ink outline-none focus:border-accent"
-      />
-    </label>
-  );
-}
+const TEAM = [
+  { role: "Team Leader", name: "Harsh Kawatra", college: "Delhi Technological University (DTU)", degree: "B.Tech in Electronics & Communication Engineering (ECE)" },
+  { role: "Team Member-1", name: "Gursimran Kaur", college: "Guru Gobind Singh Indraprastha University (GGSIPU)", degree: "BCA (Bachelor of Computer Applications)" },
+  { role: "Team Member-2", name: "Anuj Gambhir", college: "Delhi Technological University (DTU)", degree: "B.Tech in Biotechnology (BT)" },
+  { role: "Team Member-3", name: "Dayita Arora", college: "Ramjas College (DU)", degree: "B.Sc in Statistics" },
+];
 
 export default function CostTeam() {
   return (
@@ -61,18 +55,25 @@ export default function CostTeam() {
         <Stat value="CPU" label="first; GPU optional" color="#a78bfa" />
       </div>
 
-      <h3 className="prose-h3">Team &amp; cover (editable)</h3>
+      <h3 className="prose-h3">Team &amp; cover</h3>
       <div className="rounded-2xl border border-line bg-panel p-5">
-        <Field label="Team Name" defaultValue="SURYASETU" />
-        <Field label="Problem Statement" defaultValue="PS-15 · Forecasting / Nowcasting of Solar Flares (Aditya-L1)" />
-        <Field label="Team Leader" defaultValue="Harsh Kawatra" />
-        <Field label="Leader College" defaultValue="Delhi Technological University (DTU)" />
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-xl border border-line bg-bg2 p-3">
-              <div className="mb-2 text-sm font-bold text-accent2">Member {i}</div>
-              <Field label="Name" placeholder="Name" />
-              <Field label="College" placeholder="College" />
+        <div className="mb-4 grid gap-2 sm:grid-cols-2">
+          <div className="flex gap-2">
+            <span className="w-40 shrink-0 text-sm text-muted">Team Name</span>
+            <span className="text-[15px] font-semibold text-ink">SURYASETU</span>
+          </div>
+          <div className="flex gap-2">
+            <span className="w-40 shrink-0 text-sm text-muted">Problem Statement</span>
+            <span className="text-[15px] font-semibold text-ink">PS-15 · Forecasting / Nowcasting of Solar Flares (Aditya-L1)</span>
+          </div>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {TEAM.map((m) => (
+            <div key={m.name} className="rounded-xl border border-line bg-bg2 p-3">
+              <div className="mb-2 text-sm font-bold text-accent2">{m.role}</div>
+              <div className="text-[15px] font-semibold text-ink">{m.name}</div>
+              <div className="mt-1 text-[13px] text-muted">{m.college}</div>
+              <div className="text-[13px] text-muted">{m.degree}</div>
             </div>
           ))}
         </div>
