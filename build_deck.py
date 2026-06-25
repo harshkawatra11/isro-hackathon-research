@@ -29,7 +29,7 @@ CARD2  = RGBColor(0xeb, 0xef, 0xf8)
 BORDER = RGBColor(0xd6, 0xdd, 0xec)
 BODY   = RGBColor(0x12, 0x16, 0x20)   # near-black for readable body text
 LINKB  = RGBColor(0x6d, 0xb4, 0xff)   # link blue on navy banners
-F = "Segoe UI"
+F = "Google Sans"
 TITLE_TOP = 0.70
 
 p = Presentation(SRC)
@@ -169,17 +169,18 @@ for sh in S[1].shapes:
     if sh.has_table:
         tbl = sh.table
         cells = {
-            (0,0): ("Team Leader", "Harsh Kawatra", "Delhi Technological University (DTU)", "B.Tech in Electronics and Communications Engineering (ECE)"),
-            (0,1): ("Team Member-1", "Gursimran Kaur", "Guru Gobind Singh Indraprastha University (GGSIPU)", "BCA (Bachelor of Computer Applications)"),
-            (1,0): ("Team Member-2", "Anuj Gambhir", "Delhi Technological University (DTU)", "B.Tech in Biotechnology (BT)"),
-            (1,1): ("Team Member-3", "Dayita Arora", "Ramjas College (DU)", "B.Sc in Statistics"),
+            (0,0): ("Team Leader", "Harsh Kawatra", "Delhi Technological University (DTU)"),
+            (0,1): ("Team Member-1", "Gursimran Kaur", "Guru Gobind Singh Indraprastha University (GGSIPU)"),
+            (1,0): ("Team Member-2", "Anuj Gambhir", "Delhi Technological University (DTU)"),
+            (1,1): ("Team Member-3", "Dayita Arora", "Ramjas College (DU)"),
         }
         # Four-person team: all quadrants filled.
-        for (ri,ci),(role,name,college,major) in cells.items():
+        for (ri,ci),(role,name,college) in cells.items():
             tf = tbl.cell(ri,ci).text_frame; tf.clear(); tf.word_wrap = True
+            tf.paragraphs[0].space_after = Pt(6)
             _set(tf.paragraphs[0].add_run(), role, 13, ACCENT, bold=True)
-            for label,val in [("Name: ",name),("College: ",college),("Major: ",major)]:
-                par = tf.add_paragraph()
+            for label,val in [("Name: ",name),("College: ",college)]:
+                par = tf.add_paragraph(); par.space_after = Pt(4)
                 _set(par.add_run(), label, 11, INK, bold=True)
                 _set(par.add_run(), val, 11, INK)
 rich(S[1], [[
